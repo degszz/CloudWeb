@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ICON_MAP } from '@/components/ui/icon';
+import { ICON_NAMES } from '@/components/ui/icon-names';
 
 /**
  * Schema del bloque features.
@@ -8,13 +8,10 @@ import { ICON_MAP } from '@/components/ui/icon';
  * three-col-icons: 3 columnas iguales, cada una con icono + título + cuerpo
  * bento: 4 items en grid asimétrico (1 grande + 3 pequeños)
  *
- * Constreñimos el icono al ICON_MAP del wrapper de Phosphor — el agente
- * no puede inventar nombres de iconos.
+ * Constreñimos el icono a ICON_NAMES — server-safe, sin importar React.
  */
 
-const iconNameSchema = z.enum(
-  Object.keys(ICON_MAP) as [keyof typeof ICON_MAP, ...Array<keyof typeof ICON_MAP>]
-);
+const iconNameSchema = z.enum(ICON_NAMES);
 
 const featureItemSchema = z.object({
   icon: iconNameSchema.optional(),

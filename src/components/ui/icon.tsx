@@ -1,3 +1,5 @@
+'use client';
+
 import {
   ArrowRight,
   ArrowUpRight,
@@ -67,7 +69,8 @@ export const ICON_MAP = {
   x: X,
 } as const satisfies Record<string, PhosphorIcon>;
 
-export type IconName = keyof typeof ICON_MAP;
+export type { IconName } from '@/components/ui/icon-names';
+import type { IconName } from '@/components/ui/icon-names';
 
 interface IconComponentProps extends Omit<IconProps, 'ref'> {
   name: IconName;
