@@ -1,20 +1,10 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Instrument_Serif } from 'next/font/google';
+import { Fraunces, Geist, Geist_Mono } from 'next/font/google';
 
 import { PosthogProvider } from '@/lib/analytics/posthog';
 
 import './globals.css';
 
-/**
- * Fuentes según minimalist_ui §3.
- *
- * - Geist Sans: cuerpo y UI
- * - Instrument Serif: titulares editoriales
- * - Geist Mono: código, atajos, metadatos
- *
- * Self-hosted vía next/font/google → sin requests al CDN de Google
- * en runtime (privacy-first + carga rápida).
- */
 const geistSans = Geist({
   subsets: ['latin'],
   variable: '--font-geist-sans',
@@ -27,25 +17,26 @@ const geistMono = Geist_Mono({
   display: 'swap',
 });
 
-const instrumentSerif = Instrument_Serif({
+const fraunces = Fraunces({
   subsets: ['latin'],
-  weight: '400',
-  variable: '--font-instrument-serif',
+  weight: 'variable',
+  style: ['normal', 'italic'],
+  variable: '--font-fraunces',
   display: 'swap',
 });
 
 export const metadata: Metadata = {
   title: {
-    default: 'CloudWeb',
+    default: 'CloudWeb — Habla. Publica.',
     template: '%s · CloudWeb',
   },
   description:
-    'Tu sitio web, creado en conversación. CloudWeb traduce lo que cuentas en una web profesional, publicada en un clic.',
+    'Tu sitio web, creado en conversación. Cuéntale a Lúa de qué va tu negocio y en minutos tenés una primera versión. Ajustás hablando. Publicás en un clic.',
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
   ),
   openGraph: {
-    title: 'CloudWeb',
+    title: 'CloudWeb — Habla. Publica.',
     description: 'Tu sitio web, creado en conversación.',
     type: 'website',
     locale: 'es_ES',
@@ -60,7 +51,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'CloudWeb',
+    title: 'CloudWeb — Habla. Publica.',
     description: 'Tu sitio web, creado en conversación.',
   },
 };
@@ -71,7 +62,8 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
+      data-theme="dark"
+      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable}`}
     >
       <body>
         <PosthogProvider>{children}</PosthogProvider>

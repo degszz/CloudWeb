@@ -1,18 +1,9 @@
 import Link from 'next/link';
 
-import { Icon } from '@/components/ui/icon';
+import { HeroSceneLazy as HeroScene } from '@/components/landing/hero-scene-lazy';
+import { LuaChatLazy as LuaChat } from '@/components/landing/lua-chat-lazy';
 import { detectCountry } from '@/lib/geo';
-import { PLANS, DEFAULT_PLAN, getPricing } from '@/lib/stripe/plans';
-
-/**
- * Landing page — cloudweb.app
- *
- * Monocromática, editorial, mobile-first. Sin clichés, sin gradientes,
- * sin sombras pesadas. Cada sección separada solo por border-top.
- *
- * Detección automática de país: si el visitante está en Argentina,
- * muestra precios en ARS. Si no, USD.
- */
+import { DEFAULT_PLAN, getPricing, PLANS } from '@/lib/stripe/plans';
 
 export default async function LandingPage() {
   const geo = await detectCountry();
@@ -21,406 +12,1477 @@ export default async function LandingPage() {
 
   return (
     <>
-      <HeroSection />
-      <DemoSection />
-      <FeaturesSection />
-      <CasesSection />
-      <PricingSection
+      <Hero />
+      <Demo />
+      <Features />
+      <HowItWorks />
+      <WhoUsesIt />
+      <Pricing
         priceDisplay={pricing.display}
-        currencyLabel={geo.isArgentina ? 'ARS' : 'USD'}
         isArgentina={geo.isArgentina}
         trialDays={plan.trialDays}
       />
-      <FinalCTASection />
+      <FinalCTA trialDays={plan.trialDays} />
     </>
   );
 }
 
 /* =========================================================================
-   Hero — 100svh, chat mockup
+   HERO — 100vh, 3D canvas, chat de Lúa
    ========================================================================= */
-function HeroSection() {
+function Hero() {
   return (
-    <section className="flex min-h-svh flex-col justify-center px-5 pb-16 pt-24 md:px-10">
-      <div className="mx-auto w-full max-w-canvas">
-        <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink-mute">
-          Crea tu web hablando
-        </p>
+    <section
+      style={{
+        position: 'relative',
+        minHeight: '100svh',
+        display: 'grid',
+        gridTemplateRows: '1fr auto',
+        padding: '0 28px 28px',
+        overflow: 'hidden',
+      }}
+    >
+      {/* 3D background */}
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+        <HeroScene />
+      </div>
 
-        <h1 className="mt-5 max-w-[14ch] font-display text-[clamp(2.4rem,8vw,5.5rem)] leading-[1.0] tracking-display text-ink-strong">
-          Tu sitio, creado en conversación.
-        </h1>
+      {/* Grid overlay */}
+      <div
+        style={{
+          position: 'absolute', inset: 0, zIndex: 1,
+          backgroundImage: `
+            linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)
+          `,
+          backgroundSize: '80px 80px',
+          pointerEvents: 'none',
+        }}
+      />
 
-        <p className="mt-6 max-w-[480px] text-[clamp(16px,2.5vw,20px)] leading-body text-ink-mute">
-          Cuéntale a Lúa de qué va tu negocio. En cinco minutos tienes una
-          primera versión. La ajustas hablando, no arrastrando bloques.
-          La publicas en un clic.
-        </p>
+      {/* Spacer */}
+      <div />
 
-        <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-          <Link
-            href="/login"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-ink-strong px-7 py-3.5 text-[15px] text-canvas-pure transition-all duration-200 hover:bg-[#333333] active:scale-[0.97] sm:w-auto"
+      {/* Content */}
+      <div
+        style={{
+          position: 'relative', zIndex: 2,
+          display: 'grid',
+          gridTemplateColumns: '1fr auto',
+          gap: 40,
+          alignItems: 'end',
+        }}
+        className="hero-content"
+      >
+        <div>
+          {/* Meta */}
+          <div
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-2)',
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '8px 24px',
+              marginBottom: 16,
+            }}
           >
-            Empezar gratis
-            <Icon name="arrow-right" size={16} />
-          </Link>
-          <Link
-            href="#precio"
-            className="text-sm text-ink-mute transition-colors hover:text-ink-strong"
+            <span>
+              <strong style={{ color: 'var(--ink)', fontWeight: 500 }}>v1.0</strong>
+              {' '}· MVP
+            </span>
+            <span style={{ color: 'var(--ink-3)' }}>tu-nombre.cloudweb.app</span>
+          </div>
+
+          {/* Headline */}
+          <h1
+            style={{
+              fontFamily: 'var(--font-fraunces, var(--font-display))',
+              fontWeight: 300,
+              fontSize: 'clamp(4rem, 14vw, 13rem)',
+              lineHeight: 0.88,
+              letterSpacing: '-0.055em',
+              color: 'var(--ink-strong)',
+              marginBottom: 0,
+            }}
           >
-            Ver precio →
-          </Link>
+            <span style={{ display: 'block' }}>Habla.</span>
+            <em style={{ display: 'block', fontStyle: 'italic', fontWeight: 400 }}>
+              Publica.
+            </em>
+            <span
+              style={{
+                display: 'block',
+                fontSize: '0.4em',
+                letterSpacing: '-0.03em',
+                fontStyle: 'italic',
+                fontWeight: 300,
+                color: 'var(--ink-2)',
+                marginTop: 14,
+              }}
+            >
+              tu web, en una conversación.
+            </span>
+          </h1>
+
+          <div
+            style={{
+              marginTop: 32,
+              display: 'flex',
+              gap: 14,
+              flexWrap: 'wrap',
+              alignItems: 'center',
+            }}
+          >
+            <Link
+              href="/login"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '12px 22px',
+                background: 'var(--ink-strong)',
+                color: 'var(--bg)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 12,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                border: '1px solid var(--ink-strong)',
+                transition: 'all 0.2s',
+              }}
+            >
+              empezar gratis →
+            </Link>
+            <Link
+              href="#precio"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: 'var(--ink-2)',
+                borderBottom: '1px solid var(--line-hard)',
+                paddingBottom: 2,
+              }}
+            >
+              ver precio
+            </Link>
+          </div>
         </div>
 
-        {/* Chat mockup */}
-        <div className="mt-14 max-w-xl overflow-hidden rounded-lg border border-line">
-          <div className="flex items-center gap-2 border-b border-line bg-surface-warm px-4 py-3">
-            <span className="h-2 w-2 rounded-pill bg-ink-faint" />
-            <span className="h-2 w-2 rounded-pill bg-ink-faint" />
-            <span className="h-2 w-2 rounded-pill bg-ink-faint" />
-            <span className="ml-2 font-mono text-[11px] tracking-[0.04em] text-ink-mute">
-              Lúa — asistente de CloudWeb
+        {/* Chat widget */}
+        <div className="hero-chat-aside">
+          <LuaChat />
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div
+        style={{
+          position: 'relative', zIndex: 2,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginTop: 24,
+          flexWrap: 'wrap',
+          gap: 12,
+        }}
+      >
+        <div
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            color: 'var(--ink-2)',
+          }}
+        >
+          scroll
+          <span
+            style={{
+              width: 60, height: 1,
+              background: 'var(--ink-3)',
+              position: 'relative', overflow: 'hidden',
+              display: 'inline-block',
+            }}
+          >
+            <span
+              style={{
+                position: 'absolute', top: 0, left: '-100%',
+                width: '100%', height: '100%',
+                background: 'var(--ink)',
+                animation: 'cw-slide 2.2s infinite',
+              }}
+            />
+          </span>
+          sigue
+        </div>
+        <div
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: 'var(--ink-3)',
+          }}
+        >
+          arrastrá el objeto · interactivo
+        </div>
+      </div>
+
+      {/* Responsive styles */}
+      <style>{`
+        @media (max-width: 900px) {
+          .hero-content {
+            grid-template-columns: 1fr !important;
+            gap: 28px !important;
+          }
+          .hero-chat-aside { width: 100% !important; max-width: 500px; }
+        }
+        @media (max-width: 600px) {
+          .hero-content { padding-top: 80px; }
+        }
+      `}</style>
+    </section>
+  );
+}
+
+/* =========================================================================
+   DEMO — chat + preview side by side
+   ========================================================================= */
+function Demo() {
+  const messages = [
+    { role: 'lua', text: '¿Qué tipo de negocio es?' },
+    { role: 'you', text: 'una librería independiente. se llama Subterránea.' },
+    { role: 'lua', text: '¿Querés tienda online o vitrina con horarios y eventos?' },
+    { role: 'you', text: 'vitrina, eventos y un boletín mensual.' },
+    { role: 'lua', text: 'Hecho. Tipografía editorial, fondo crudo, calendario abajo. Mirá a la derecha.' },
+    { role: 'you', text: 'el título un poco más grande.' },
+    { role: 'lua', text: '¿Publicamos en subterranea.cloudweb.app?' },
+  ];
+
+  return (
+    <section style={{ padding: '120px 28px', borderTop: '1px solid var(--line-hard)' }} id="demo">
+      <SecLabel num="01 / demo" right="describís y aparece" />
+      <h2
+        style={{
+          fontFamily: 'var(--font-fraunces, var(--font-display))',
+          fontWeight: 300,
+          fontSize: 'clamp(2.2rem, 6vw, 5rem)',
+          lineHeight: 0.92,
+          letterSpacing: '-0.05em',
+          color: 'var(--ink-strong)',
+          maxWidth: '18ch',
+          margin: '24px 0 60px',
+        }}
+      >
+        No <em style={{ fontStyle: 'italic', fontWeight: 400 }}>diseñás.</em> Lo contás y se construye{' '}
+        <em style={{ fontStyle: 'italic', fontWeight: 400 }}>delante</em> de vos.
+      </h2>
+
+      <div
+        className="demo-grid"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1.1fr',
+          border: '1px solid var(--line-hard)',
+        }}
+      >
+        {/* Chat column */}
+        <div
+          style={{
+            padding: 28,
+            borderRight: '1px solid var(--line-hard)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+            background: 'var(--bg-2)',
+          }}
+        >
+          {messages.map((m, i) => (
+            <div
+              key={i}
+              style={{
+                alignSelf: m.role === 'you' ? 'flex-end' : 'flex-start',
+                maxWidth: '90%',
+                padding: '8px 12px',
+                ...(m.role === 'lua'
+                  ? {
+                      background: 'var(--surface)',
+                      borderLeft: '2px solid var(--ink-strong)',
+                      fontFamily: 'var(--font-fraunces, var(--font-display))',
+                      fontStyle: 'italic',
+                      fontSize: 15,
+                      color: 'var(--ink)',
+                    }
+                  : {
+                      background: 'var(--ink-strong)',
+                      color: 'var(--bg)',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 12,
+                    }),
+              }}
+            >
+              {m.text}
+            </div>
+          ))}
+        </div>
+
+        {/* Preview column */}
+        <div style={{ background: 'var(--surface)', display: 'flex', flexDirection: 'column' }}>
+          {/* Browser bar */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '10px 14px',
+              borderBottom: '1px solid var(--line)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: 10,
+              color: 'var(--ink-3)',
+            }}
+          >
+            {[0, 1, 2].map(i => (
+              <span
+                key={i}
+                style={{
+                  width: 8, height: 8,
+                  borderRadius: '50%',
+                  border: '1px solid var(--line-hard)',
+                }}
+              />
+            ))}
+            <span style={{ marginLeft: 12, color: 'var(--ink-2)' }}>
+              subterranea.cloudweb.app
             </span>
           </div>
-          <div className="flex flex-col gap-4 bg-canvas-pure p-5">
-            <div className="max-w-[85%] self-end rounded-lg bg-ink-strong px-4 py-3 text-sm leading-relaxed text-canvas-pure">
-              Tengo una cafetería de especialidad en Vigo, con tostado propio.
-            </div>
-            <div className="max-w-[85%] self-start rounded-lg bg-surface-warm px-4 py-3 text-sm leading-relaxed text-ink">
-              He montado una primera versión con hero, tres puntos destacados
-              y contacto con horarios. ¿Cómo se llama tu cafetería?
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
-/* =========================================================================
-   Demo — 3 pasos + preview simulado
-   ========================================================================= */
-function DemoSection() {
-  return (
-    <section className="border-t border-line px-5 py-20 md:px-10 md:py-32">
-      <div className="mx-auto w-full max-w-canvas">
-        <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink-mute">
-          Cómo funciona
-        </p>
-        <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.05] tracking-display text-ink-strong">
-          Tres pasos. Cinco minutos.
-        </h2>
-
-        <div className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-line md:grid-cols-[1fr_1.6fr]">
-          {/* Steps */}
-          <div className="flex flex-col gap-5 bg-surface-warm p-6 md:p-8">
-            {[
-              ['01', 'Describe tu negocio', 'en una frase. Lúa elige un template y lo rellena con copy realista.'],
-              ['02', 'Ajusta hablando.', '"Cambia el titular", "pon los horarios del finde", "añade testimonios". Lúa lo hace al instante.'],
-              ['03', 'Di "publica"', 'y tu web está en vivo en tu-cafe.cloudweb.app con SSL incluido.'],
-            ].map(([num, title, text]) => (
-              <div key={num} className="flex gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-pill border border-line font-mono text-[10px] text-ink-mute">
-                  {num}
-                </span>
-                <p className="pt-0.5 text-sm leading-relaxed text-ink-mute">
-                  <strong className="font-medium text-ink-strong">{title}</strong>{' '}
-                  {text}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Preview simulation */}
-          <div className="flex min-h-[300px] flex-col items-center justify-center bg-surface-bone p-10 text-center md:min-h-[420px]">
-            <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.06em] text-ink-mute">
-              Vista previa en vivo
-            </p>
-            <h3 className="font-display text-[clamp(1.8rem,4vw,2.8rem)] leading-[1.1] tracking-display text-ink-strong">
-              Café Lúa
-            </h3>
-            <p className="mt-3 max-w-[280px] text-sm text-ink-mute">
-              Tostado propio en el centro de Vigo. Café como debería ser.
-            </p>
-            <p className="mt-6 font-mono text-[11px] text-ink-faint">
-              cafe-lua.cloudweb.app
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* =========================================================================
-   Features — grid asimétrico, primera celda invertida
-   ========================================================================= */
-function FeaturesSection() {
-  const features = [
-    {
-      num: '01',
-      title: 'Agente IA que construye de verdad',
-      desc: 'Lúa no sugiere. Hace. Elige componentes, escribe copy realista, cambia layouts. Tú solo describes lo que quieres.',
-      invert: true,
-    },
-    {
-      num: '02',
-      title: 'Preview en vivo',
-      desc: 'Ves cómo cambia tu web mientras hablas. Cada cambio se refleja al instante.',
-    },
-    {
-      num: '03',
-      title: 'Publicación en un clic',
-      desc: 'Tu sitio en tu-nombre.cloudweb.app con SSL. Sin FTP, sin configuración, sin esperar.',
-    },
-    {
-      num: '04',
-      title: 'Diseño editorial',
-      desc: 'Tipografía de alto contraste, paleta monocromática, espaciado generoso. Tu web parece hecha por un diseñador.',
-    },
-    {
-      num: '05',
-      title: '12 componentes profesionales',
-      desc: 'Hero, features, testimonios, contacto, FAQ, footer. Cada uno con dos variantes para diferentes estilos.',
-    },
-  ];
-
-  return (
-    <section className="border-t border-line px-5 py-20 md:px-10 md:py-32">
-      <div className="mx-auto w-full max-w-canvas">
-        <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink-mute">
-          Lo que incluye
-        </p>
-        <h2 className="mt-4 max-w-[16ch] font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.05] tracking-display text-ink-strong">
-          Sin pelea con builders.
-        </h2>
-
-        <div className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((f) => (
+          {/* Preview content */}
+          <div style={{ padding: '28px 28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div
-              key={f.num}
-              className={`p-6 md:p-10 ${
-                f.invert
-                  ? 'bg-ink-strong text-canvas-pure sm:col-span-2 lg:col-span-1 lg:row-span-2 lg:flex lg:flex-col lg:justify-center'
-                  : 'bg-canvas-pure'
-              }`}
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 10,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: 'var(--ink-2)',
+              }}
+            >
+              librería · buenos aires
+            </div>
+            <h3
+              style={{
+                fontFamily: 'var(--font-fraunces, var(--font-display))',
+                fontWeight: 300,
+                fontSize: 'clamp(1.6rem, 3.5vw, 2.8rem)',
+                lineHeight: 0.96,
+                letterSpacing: '-0.04em',
+                color: 'var(--ink-strong)',
+              }}
+            >
+              Subterránea,{' '}
+              <em style={{ fontStyle: 'italic', fontWeight: 400 }}>
+                libros que no caben en mesas grandes.
+              </em>
+            </h3>
+            <div
+              style={{
+                flex: 1,
+                background: 'var(--surface-2)',
+                border: '1px solid var(--line)',
+                minHeight: 120,
+                position: 'relative',
+                overflow: 'hidden',
+              }}
             >
               <span
-                className={`mb-5 flex h-7 w-7 items-center justify-center rounded-pill border font-mono text-[10px] ${
-                  f.invert
-                    ? 'border-[#444] text-[#888]'
-                    : 'border-line text-ink-faint'
-                }`}
+                style={{
+                  position: 'absolute', top: '50%', left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 10,
+                  letterSpacing: '0.1em',
+                  color: 'var(--ink-3)',
+                  textTransform: 'uppercase',
+                }}
               >
-                {f.num}
+                imagen principal
               </span>
-              <h3
-                className={`mb-2 text-[16px] font-medium ${
-                  f.invert ? 'text-canvas-pure' : 'text-ink-strong'
-                }`}
-              >
-                {f.title}
-              </h3>
-              <p
-                className={`text-sm leading-relaxed ${
-                  f.invert ? 'text-[#999]' : 'text-ink-mute'
-                }`}
-              >
-                {f.desc}
-              </p>
             </div>
-          ))}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              {[
+                { tag: 'próximo evento', text: 'Lectura · Anne Carson, 12 may' },
+                { tag: 'boletín', text: 'cuatro libros al mes, sin spam.' },
+              ].map(c => (
+                <div
+                  key={c.tag}
+                  style={{
+                    border: '1px solid var(--line)',
+                    padding: '12px',
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 9,
+                      letterSpacing: '0.1em',
+                      textTransform: 'uppercase',
+                      color: 'var(--ink-3)',
+                      marginBottom: 6,
+                    }}
+                  >
+                    {c.tag}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: 'var(--font-fraunces, var(--font-display))',
+                      fontSize: 16,
+                      lineHeight: 1.1,
+                      color: 'var(--ink)',
+                    }}
+                  >
+                    {c.text}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Steps indicator */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginTop: 16,
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10,
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          color: 'var(--ink-2)',
+          flexWrap: 'wrap',
+          gap: 8,
+        }}
+      >
+        <span style={{ padding: '6px 10px', border: '1px solid var(--line-hard)', color: 'var(--ink)' }}>
+          [ describís ]
+        </span>
+        <span>↳ ajustás hablando ↲</span>
+        <span style={{ padding: '6px 10px', border: '1px solid var(--line-hard)', color: 'var(--ink)' }}>
+          [ publicás ]
+        </span>
+      </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .demo-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }
 
 /* =========================================================================
-   Cases — 3 ejemplos de webs generadas
+   FEATURES — bento grid
    ========================================================================= */
-function CasesSection() {
-  const cases = [
+function Features() {
+  return (
+    <section style={{ padding: '120px 28px', borderTop: '1px solid var(--line-hard)' }} id="features">
+      <SecLabel num="02 / capacidades" right="qué hace, exactamente" />
+      <h2
+        style={{
+          fontFamily: 'var(--font-fraunces, var(--font-display))',
+          fontWeight: 300,
+          fontSize: 'clamp(2.2rem, 6vw, 5rem)',
+          lineHeight: 0.92,
+          letterSpacing: '-0.05em',
+          color: 'var(--ink-strong)',
+          maxWidth: '16ch',
+          margin: '24px 0 50px',
+        }}
+      >
+        Una caja{' '}
+        <em style={{ fontStyle: 'italic', fontWeight: 400 }}>de herramientas</em>{' '}
+        que solo necesita que hables.
+      </h2>
+
+      <div className="bento-grid">
+        {/* Cell 1 — Lúa, grande */}
+        <BentoCell className="bento-c1" tag="[ agente · lúa ]" accent>
+          <div
+            style={{
+              fontFamily: 'var(--font-fraunces, var(--font-display))',
+              fontWeight: 300,
+              fontSize: 'clamp(2rem, 4vw, 3.2rem)',
+              lineHeight: 0.96,
+              letterSpacing: '-0.04em',
+              color: 'var(--ink-strong)',
+              marginTop: 'auto',
+            }}
+          >
+            Lúa{' '}
+            <em style={{ fontStyle: 'italic', fontWeight: 400 }}>entiende</em>{' '}
+            el contexto, no solo las palabras.
+          </div>
+          <p
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 12,
+              lineHeight: 1.6,
+              color: 'var(--ink-2)',
+              marginTop: 16,
+              maxWidth: '36ch',
+              background: 'rgba(0,0,0,0.4)',
+              padding: '6px 10px',
+            }}
+          >
+            Sabe que un fotógrafo de bodas necesita galerías densas y un consultor
+            necesita una página de copy. No te pregunta qué fuente querés.
+          </p>
+        </BentoCell>
+
+        {/* Cell 2 */}
+        <BentoCell className="bento-c2" tag="[ publicación ]">
+          <div
+            style={{
+              fontFamily: 'var(--font-fraunces, var(--font-display))',
+              fontWeight: 300,
+              fontSize: 'clamp(1.4rem, 2.5vw, 2.2rem)',
+              lineHeight: 0.96,
+              letterSpacing: '-0.04em',
+              color: 'var(--ink-strong)',
+            }}
+          >
+            Un dominio{' '}
+            <em style={{ fontStyle: 'italic', fontWeight: 400 }}>
+              {'{'}tu-nombre{'}'}.cloudweb.app
+            </em>{' '}
+            al instante.
+          </div>
+        </BentoCell>
+
+        {/* Cell 3 */}
+        <BentoCell className="bento-c3" tag="[ formularios ]">
+          <div
+            style={{
+              fontFamily: 'var(--font-fraunces, var(--font-display))',
+              fontWeight: 300,
+              fontSize: 'clamp(1.3rem, 2vw, 1.9rem)',
+              lineHeight: 0.96,
+              letterSpacing: '-0.03em',
+              color: 'var(--ink-strong)',
+            }}
+          >
+            Reservas, contacto, lista de espera —
+            <em style={{ fontStyle: 'italic', fontWeight: 400 }}> ya conectadas.</em>
+          </div>
+        </BentoCell>
+
+        {/* Cell 4 — inverted */}
+        <BentoCell className="bento-c4" tag="[ velocidad ]" inverted>
+          <div
+            style={{
+              fontFamily: 'var(--font-fraunces, var(--font-display))',
+              fontWeight: 300,
+              fontSize: 60,
+              lineHeight: 0.9,
+              letterSpacing: '-0.05em',
+              color: 'inherit',
+            }}
+          >
+            100
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14, letterSpacing: 0 }}>
+              /100
+            </span>
+          </div>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'rgba(255,255,255,0.6)', marginTop: 8 }}>
+            PageSpeed por defecto.
+          </p>
+        </BentoCell>
+
+        {/* Cell 5 */}
+        <BentoCell className="bento-c5" tag="[ edición continua ]">
+          <div
+            style={{
+              fontFamily: 'var(--font-fraunces, var(--font-display))',
+              fontWeight: 300,
+              fontSize: 'clamp(1.3rem, 2vw, 1.9rem)',
+              lineHeight: 0.96,
+              letterSpacing: '-0.03em',
+              color: 'var(--ink-strong)',
+            }}
+          >
+            Seguís hablando.{' '}
+            <em style={{ fontStyle: 'italic', fontWeight: 400 }}>Cambiás titulares</em>,
+            movés secciones, pedís otra paleta.
+          </div>
+          <pre
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              lineHeight: 1.7,
+              color: 'var(--ink-2)',
+              marginTop: 20,
+            }}
+          >
+            {`> "hace el hero más serio"
+> "sacá la foto del equipo"
+> "más espacio entre títulos"
+> "publicá"`}
+          </pre>
+        </BentoCell>
+
+        {/* Cell 6 */}
+        <BentoCell className="bento-c6" tag="[ analítica honesta ]">
+          <div
+            style={{
+              fontFamily: 'var(--font-fraunces, var(--font-display))',
+              fontWeight: 300,
+              fontSize: 'clamp(1.3rem, 2vw, 1.9rem)',
+              lineHeight: 0.96,
+              letterSpacing: '-0.03em',
+              color: 'var(--ink-strong)',
+            }}
+          >
+            Visitas reales. Sin{' '}
+            <em style={{ fontStyle: 'italic', fontWeight: 400 }}>cookies</em>, sin{' '}
+            <em style={{ fontStyle: 'italic', fontWeight: 400 }}>banners</em>, sin{' '}
+            <em style={{ fontStyle: 'italic', fontWeight: 400 }}>excusas.</em>
+          </div>
+        </BentoCell>
+      </div>
+
+      <style>{`
+        .bento-grid {
+          display: grid;
+          grid-template-columns: repeat(6, 1fr);
+          grid-auto-rows: 200px;
+          border: 1px solid var(--line-hard);
+        }
+        .bento-cell {
+          border-right: 1px solid var(--line-hard);
+          border-bottom: 1px solid var(--line-hard);
+          padding: 24px;
+          position: relative;
+          overflow: hidden;
+          background: var(--bg-2);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          transition: background 0.25s;
+        }
+        .bento-cell:hover { background: var(--surface); }
+        .bento-cell.inverted { background: #e8e8e8 !important; color: #111; }
+        .bento-cell.inverted:hover { background: #ffffff !important; }
+        [data-theme="light"] .bento-cell.inverted { background: #111 !important; color: #f0f0f0; }
+        [data-theme="light"] .bento-cell.inverted:hover { background: #222 !important; }
+        .bento-c1 { grid-column: span 3; grid-row: span 2; }
+        .bento-c2 { grid-column: span 3; grid-row: span 1; }
+        .bento-c3 { grid-column: span 2; grid-row: span 1; }
+        .bento-c4 { grid-column: span 1; grid-row: span 1; }
+        .bento-c5 { grid-column: span 2; grid-row: span 2; }
+        .bento-c6 { grid-column: span 4; grid-row: span 1; }
+        @media (max-width: 1024px) {
+          .bento-grid { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 180px; }
+          .bento-c1 { grid-column: span 4; grid-row: span 2; }
+          .bento-c2 { grid-column: span 4; }
+          .bento-c3 { grid-column: span 2; }
+          .bento-c4 { grid-column: span 2; }
+          .bento-c5 { grid-column: span 2; grid-row: span 2; }
+          .bento-c6 { grid-column: span 2; }
+        }
+        @media (max-width: 640px) {
+          .bento-grid { grid-template-columns: 1fr; grid-auto-rows: auto; }
+          .bento-cell { min-height: 160px; }
+          .bento-c1,.bento-c2,.bento-c3,.bento-c4,.bento-c5,.bento-c6 {
+            grid-column: span 1; grid-row: span 1;
+          }
+          .bento-c1 { min-height: 240px; }
+        }
+      `}</style>
+    </section>
+  );
+}
+
+/* =========================================================================
+   HOW IT WORKS — 3 pasos con visualizaciones
+   ========================================================================= */
+function HowItWorks() {
+  const steps = [
     {
-      name: 'Marina Solé',
-      type: 'Ilustración · Barcelona',
-      desc: 'Portfolio de ilustradora',
-      detail: 'Hero con imagen, sección de servicios y formulario de contacto para encargos.',
-      time: '8 min',
+      num: 'paso uno · ↘ describís',
+      title: <>Le <em>contás</em> qué querés.</>,
+      body: '"una web para mi taller de bicicletas, con reservas de revisión y un mapa". No hay formularios de onboarding. No hay 47 plantillas. Es una conversación.',
+      visual: (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+            padding: '20px',
+          }}
+        >
+          <div
+            style={{
+              alignSelf: 'flex-end',
+              background: 'var(--ink-strong)',
+              color: 'var(--bg)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: 12,
+              padding: '10px 14px',
+              maxWidth: '80%',
+            }}
+          >
+            una web para mi taller de bicis. quiero reservas y un mapa.
+          </div>
+          <div
+            style={{
+              alignSelf: 'flex-start',
+              background: 'var(--surface)',
+              borderLeft: '2px solid var(--ink-strong)',
+              fontFamily: 'var(--font-fraunces, var(--font-display))',
+              fontStyle: 'italic',
+              fontSize: 15,
+              padding: '10px 14px',
+              maxWidth: '80%',
+              color: 'var(--ink)',
+            }}
+          >
+            Genial. ¿Reparación, custom, las dos? ¿Vendés piezas online?
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, justifyContent: 'center', marginTop: 8 }}>
+            {Array.from({ length: 14 }, (_, i) => (
+              <span
+                key={i}
+                style={{
+                  width: 3, background: 'var(--ink-2)', borderRadius: 0,
+                  animation: `cw-wave 1.4s ${i * 0.1}s infinite ease-in-out`,
+                  display: 'inline-block',
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      ),
     },
     {
-      name: 'Café Lúa',
-      type: 'Hostelería · Vigo',
-      desc: 'Web de cafetería',
-      detail: 'Hero, tres puntos destacados, horarios y ubicación. Con testimonio de cliente.',
-      time: '6 min',
+      num: 'paso dos · ↘ ajustás',
+      title: <>Lo <em>retocás</em> hablando.</>,
+      body: '"el título más grande", "sacá esa sección", "una paleta más fría". Lúa cambia y vuelve a mostrar. Sin paneles, sin sliders.',
+      visual: (
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(6, 1fr)',
+            gridAutoRows: '1fr',
+            gap: 8,
+            padding: '20px',
+            height: '100%',
+          }}
+        >
+          {[
+            { cols: 6, solid: true, delay: 0 },
+            { cols: 4, solid: false, delay: 0.2 },
+            { cols: 2, solid: true, delay: 0.4 },
+            { cols: 2, solid: false, delay: 0.6 },
+            { cols: 3, solid: false, delay: 0.5 },
+            { cols: 3, solid: true, delay: 0.7 },
+          ].map((b, i) => (
+            <div
+              key={i}
+              style={{
+                gridColumn: `span ${b.cols}`,
+                background: b.solid ? 'var(--ink-strong)' : 'var(--surface)',
+                border: '1px solid var(--line-hard)',
+                animation: `cw-blink 3s ${b.delay}s infinite cubic-bezier(.7,0,.3,1)`,
+              }}
+            />
+          ))}
+        </div>
+      ),
     },
     {
-      name: 'Nadia Cortés',
-      type: 'Consultoría · Madrid',
-      desc: 'Servicios de consultoría',
-      detail: 'Proceso en 3 pasos, testimonios de clientes, FAQ y formulario de contacto.',
-      time: '12 min',
+      num: 'paso tres · ↘ publicás',
+      title: <><em>Vive</em> en un clic.</>,
+      body: 'Cuando decís "publicalo", está en internet. SSL, CDN, dominio gratuito incluido. Si querés tu dominio, lo conectás después.',
+      visual: (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            padding: '20px',
+            height: '100%',
+          }}
+        >
+          <div
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 12,
+              lineHeight: 1.8,
+              color: 'var(--ink)',
+            }}
+          >
+            <span style={{ display: 'block', color: 'var(--ink-2)' }}>$ lua publish mi-taller</span>
+            <span style={{ display: 'block' }}>✓ build · 2.1s</span>
+            <span style={{ display: 'block' }}>✓ ssl · emitido</span>
+            <span style={{ display: 'block' }}>✓ cdn · 184 nodos</span>
+            <span style={{ display: 'block', color: 'var(--ink-strong)', fontWeight: 600 }}>✓ live · 3.4s</span>
+          </div>
+          <div>
+            <div
+              style={{
+                fontFamily: 'var(--font-fraunces, var(--font-display))',
+                fontStyle: 'italic',
+                fontWeight: 300,
+                fontSize: 'clamp(60px, 10vw, 120px)',
+                lineHeight: 0.85,
+                letterSpacing: '-0.06em',
+                color: 'var(--ink-strong)',
+                textAlign: 'right',
+              }}
+            >
+              live.
+            </div>
+            <div
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 12,
+                borderTop: '1px solid var(--line-hard)',
+                paddingTop: 8,
+                display: 'flex',
+                justifyContent: 'space-between',
+                color: 'var(--ink-2)',
+              }}
+            >
+              <span>↳ mi-taller.cloudweb.app</span>
+              <span>0.4s ttfb</span>
+            </div>
+          </div>
+        </div>
+      ),
     },
   ];
 
   return (
-    <section className="border-t border-line px-5 py-20 md:px-10 md:py-32">
-      <div className="mx-auto w-full max-w-canvas">
-        <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink-mute">
-          Quién lo usa
-        </p>
-        <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.05] tracking-display text-ink-strong">
-          Webs reales, creadas hablando.
+    <section style={{ padding: '120px 0 0', borderTop: '1px solid var(--line-hard)' }} id="como">
+      <div style={{ padding: '0 28px' }}>
+        <SecLabel num="03 / proceso" right="tres pasos. uno acaba donde empieza el siguiente." />
+        <h2
+          style={{
+            fontFamily: 'var(--font-fraunces, var(--font-display))',
+            fontWeight: 300,
+            fontSize: 'clamp(2.2rem, 6vw, 5rem)',
+            lineHeight: 0.92,
+            letterSpacing: '-0.05em',
+            color: 'var(--ink-strong)',
+            maxWidth: '12ch',
+            margin: '24px 0 50px',
+          }}
+        >
+          Es <em style={{ fontStyle: 'italic', fontWeight: 400 }}>así.</em>
         </h2>
-
-        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6">
-          {cases.map((c) => (
-            <div
-              key={c.name}
-              className="overflow-hidden rounded-lg border border-line transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="flex aspect-[4/3] flex-col items-center justify-center border-b border-line bg-surface-bone p-6 text-center">
-                <p className="font-display text-[clamp(1.4rem,3vw,1.8rem)] leading-[1.1] tracking-display text-ink-strong">
-                  {c.name}
-                </p>
-                <p className="mt-1.5 text-xs text-ink-faint">{c.type}</p>
-              </div>
-              <div className="p-5">
-                <p className="text-sm font-medium text-ink-strong">{c.desc}</p>
-                <p className="mt-1 text-[13px] leading-relaxed text-ink-mute">
-                  {c.detail}
-                </p>
-                <p className="mt-2.5 font-mono text-[11px] text-ink-faint">
-                  Creado en {c.time}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
+
+      <div
+        className="how-steps"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          borderTop: '1px solid var(--line-hard)',
+        }}
+      >
+        {steps.map((s, i) => (
+          <div
+            key={i}
+            style={{
+              borderRight: i < 2 ? '1px solid var(--line-hard)' : undefined,
+              padding: '40px 28px',
+            }}
+          >
+            <div
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: 'var(--ink-2)',
+                marginBottom: 20,
+              }}
+            >
+              {s.num}
+            </div>
+            <h3
+              style={{
+                fontFamily: 'var(--font-fraunces, var(--font-display))',
+                fontWeight: 300,
+                fontSize: 'clamp(2rem, 4vw, 3.5rem)',
+                lineHeight: 0.9,
+                letterSpacing: '-0.05em',
+                color: 'var(--ink-strong)',
+                fontStyle: 'normal',
+              }}
+            >
+              {s.title}
+            </h3>
+            <p
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 12,
+                lineHeight: 1.7,
+                color: 'var(--ink-2)',
+                marginTop: 20,
+                maxWidth: '38ch',
+              }}
+            >
+              {s.body}
+            </p>
+            <div
+              style={{
+                marginTop: 28,
+                border: '1px solid var(--line-hard)',
+                background: 'var(--bg-2)',
+                minHeight: 240,
+                position: 'relative',
+              }}
+            >
+              {s.visual}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <style>{`
+        @media (max-width: 900px) {
+          .how-steps { grid-template-columns: 1fr !important; }
+          .how-steps > div { border-right: none !important; border-bottom: 1px solid var(--line-hard); }
+          .how-steps > div:last-child { border-bottom: none; }
+        }
+      `}</style>
     </section>
   );
 }
 
 /* =========================================================================
-   Pricing — descentrado, una sola tarjeta, precio adaptado al país
+   WHO USES IT — 3 cards con sitios reales
    ========================================================================= */
-function PricingSection({
+function WhoUsesIt() {
+  const cases = [
+    {
+      url: 'marina-prats.cloudweb.app',
+      name: 'Marina Prats',
+      type: 'ilustradora · barcelona',
+      headline: <>Dibujo libros, <em>portadas</em> y errores tipográficos a propósito.</>,
+      sub: 'encargos abiertos',
+    },
+    {
+      url: 'altagracia.cloudweb.app',
+      name: 'Altagracia',
+      type: 'cafetería · buenos aires',
+      headline: <><em>Café</em> de tueste oscuro, pan de masa madre, mesa larga.</>,
+      sub: 'abre 8 — 19',
+    },
+    {
+      url: 'jordiruiz.cloudweb.app',
+      name: 'Jordi Ruiz',
+      type: 'consultor · barcelona',
+      headline: <>Ayudo a equipos pequeños a <em>no romperse</em> al crecer.</>,
+      sub: 'hablamos · 30 min',
+    },
+  ];
+
+  return (
+    <section
+      style={{ padding: '120px 28px', borderTop: '1px solid var(--line-hard)' }}
+      id="quienes"
+    >
+      <SecLabel num="04 / en uso" right="tres webs reales, hechas hablando" />
+      <h2
+        style={{
+          fontFamily: 'var(--font-fraunces, var(--font-display))',
+          fontWeight: 300,
+          fontSize: 'clamp(2.2rem, 6vw, 5rem)',
+          lineHeight: 0.92,
+          letterSpacing: '-0.05em',
+          color: 'var(--ink-strong)',
+          maxWidth: '18ch',
+          margin: '24px 0 50px',
+        }}
+      >
+        La gente que ya{' '}
+        <em style={{ fontStyle: 'italic', fontWeight: 400 }}>habla</em> con Lúa.
+      </h2>
+
+      <div className="who-grid">
+        {cases.map((c) => (
+          <div
+            key={c.name}
+            className="who-card"
+            style={{
+              border: '1px solid var(--line-hard)',
+              background: 'var(--bg-2)',
+              transition: 'transform 0.3s cubic-bezier(.2,.8,.2,1), box-shadow 0.3s',
+            }}
+          >
+            {/* Mock browser */}
+            <div
+              style={{
+                borderBottom: '1px solid var(--line-hard)',
+                aspectRatio: '4 / 3',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '8px 12px',
+                  borderBottom: '1px solid var(--line)',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 10,
+                  color: 'var(--ink-3)',
+                }}
+              >
+                {[0, 1, 2].map(i => (
+                  <span
+                    key={i}
+                    style={{
+                      width: 7, height: 7, borderRadius: '50%',
+                      border: '1px solid var(--line-hard)',
+                    }}
+                  />
+                ))}
+                <span style={{ marginLeft: 8, color: 'var(--ink-2)' }}>{c.url}</span>
+              </div>
+              <div
+                style={{
+                  padding: '24px 20px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  height: 'calc(100% - 33px)',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 9,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: 'var(--ink-3)',
+                  }}
+                >
+                  <span>{c.name.toLowerCase()}</span>
+                  <span>2026</span>
+                </div>
+                <h4
+                  style={{
+                    fontFamily: 'var(--font-fraunces, var(--font-display))',
+                    fontWeight: 300,
+                    fontSize: 24,
+                    lineHeight: 0.95,
+                    letterSpacing: '-0.04em',
+                    color: 'var(--ink-strong)',
+                    margin: '12px 0',
+                  }}
+                >
+                  {c.headline}
+                </h4>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 9,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: 'var(--ink-3)',
+                  }}
+                >
+                  <span>{c.sub}</span>
+                  <span>↘</span>
+                </div>
+              </div>
+            </div>
+            <div
+              style={{
+                padding: '14px 18px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'baseline',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                color: 'var(--ink-2)',
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: 'var(--font-fraunces, var(--font-display))',
+                  fontStyle: 'italic',
+                  fontWeight: 300,
+                  fontSize: 20,
+                  textTransform: 'none',
+                  letterSpacing: '-0.02em',
+                  color: 'var(--ink-strong)',
+                }}
+              >
+                {c.name}
+              </span>
+              <span style={{ fontSize: 10 }}>{c.type}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <style>{`
+        .who-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 20px;
+        }
+        .who-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+        [data-theme="light"] .who-card:hover {
+          box-shadow: 6px 6px 0 var(--ink-strong);
+          transform: none;
+        }
+        @media (max-width: 900px) { .who-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 560px) { .who-grid { grid-template-columns: 1fr; } }
+      `}</style>
+    </section>
+  );
+}
+
+/* =========================================================================
+   PRICING
+   ========================================================================= */
+function Pricing({
   priceDisplay,
-  currencyLabel,
   isArgentina,
   trialDays,
 }: {
   priceDisplay: string;
-  currencyLabel: string;
   isArgentina: boolean;
   trialDays: number;
 }) {
   return (
-    <section id="precio" className="border-t border-line px-5 py-20 md:px-10 md:py-32">
-      <div className="mx-auto w-full max-w-canvas">
-        <div className="grid grid-cols-1 items-start gap-10 md:grid-cols-2 md:gap-20">
-          {/* Left */}
-          <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink-mute">
-              Precio
-            </p>
-            <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.05] tracking-display text-ink-strong">
-              Un plan. Sin sorpresas.
-            </h2>
-            <p className="mt-4 text-base leading-body text-ink-mute">
-              {trialDays} días de prueba sin tarjeta. Si en ese tiempo publicas tu web y
-              te resulta útil, ya tienes tu respuesta. Si no, no pagas nada.
-            </p>
-            {isArgentina && (
-              <p className="mt-3 text-sm text-ink-faint">
-                Pagás con MercadoPago, en pesos argentinos.
-              </p>
-            )}
-          </div>
+    <section
+      id="precio"
+      style={{
+        padding: '120px 28px',
+        borderTop: '1px solid var(--line-hard)',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr 1fr',
+        gap: 0,
+        alignItems: 'start',
+      }}
+      className="price-section"
+    >
+      <div style={{ gridColumn: 'span 2', paddingRight: 60 }}>
+        <SecLabel num="05 / precio" right="catorce días. sin tarjeta." />
+        <h2
+          style={{
+            fontFamily: 'var(--font-fraunces, var(--font-display))',
+            fontWeight: 300,
+            fontSize: 'clamp(2rem, 5vw, 4.5rem)',
+            lineHeight: 0.92,
+            letterSpacing: '-0.05em',
+            color: 'var(--ink-strong)',
+            marginTop: 28,
+          }}
+        >
+          Un precio.{' '}
+          <em style={{ fontStyle: 'italic', fontWeight: 400 }}>Sin asteriscos.</em>
+        </h2>
+        <p
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 13,
+            lineHeight: 1.7,
+            color: 'var(--ink-2)',
+            marginTop: 20,
+            maxWidth: '44ch',
+          }}
+        >
+          {trialDays} días gratis. Si después querés seguir, son {priceDisplay} al mes.
+          Si no, tu web deja de estar online. No guardamos rehenes.
+          {isArgentina && ' Pagás con MercadoPago, en pesos.'}
+        </p>
+      </div>
 
-          {/* Card */}
-          <div className="rounded-lg border border-line p-6 md:p-10">
-            <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.06em] text-ink-mute">
-              CloudWeb Pro
-            </p>
-            <p className="font-display text-[clamp(3rem,6vw,4.5rem)] leading-none tracking-display text-ink-strong">
-              {priceDisplay}
-              <span className="ml-1 font-sans text-base font-normal tracking-normal text-ink-mute">
-                / mes
-              </span>
-            </p>
+      <div />
 
-            {isArgentina && (
-              <p className="mt-1 font-mono text-[11px] text-ink-faint">
-                {currencyLabel} · MercadoPago
-              </p>
-            )}
-
-            <ul className="mt-7 flex flex-col gap-2.5">
-              {[
-                'Un sitio publicado en tu-nombre.cloudweb.app',
-                'Edición conversacional con Lúa',
-                '12 componentes profesionales, 2 variantes cada uno',
-                'SSL incluido, sin configuración',
-                'Publicación ilimitada',
-              ].map((item) => (
-                <li
-                  key={item}
-                  className="relative pl-5 text-sm leading-relaxed text-ink-mute before:absolute before:left-0 before:content-['—'] before:font-mono before:text-xs before:text-ink-faint"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8">
-              <Link
-                href="/login"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-ink-strong px-6 py-3.5 text-[15px] text-canvas-pure transition-all duration-200 hover:bg-[#333333] active:scale-[0.97] sm:w-auto"
-              >
-                Empezar {trialDays} días gratis
-                <Icon name="arrow-right" size={16} />
-              </Link>
-            </div>
-            <p className="mt-3 text-xs text-ink-faint">
-              {isArgentina
-                ? 'Pagás con MercadoPago. Sin tarjeta hasta el final de la prueba.'
-                : 'Sin tarjeta hasta el final de la prueba.'}
-            </p>
-          </div>
+      {/* Card */}
+      <div
+        style={{
+          border: '1px solid var(--line-hard)',
+          background: 'var(--bg-2)',
+          padding: 30,
+          transform: 'translateY(40px)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 16,
+        }}
+      >
+        <div
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
+            color: 'var(--ink-2)',
+          }}
+        >
+          [ plan único ]
         </div>
+        <div
+          style={{
+            fontFamily: 'var(--font-fraunces, var(--font-display))',
+            fontWeight: 300,
+            fontSize: 80,
+            lineHeight: 0.9,
+            letterSpacing: '-0.06em',
+            color: 'var(--ink-strong)',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: 6,
+          }}
+        >
+          <sup style={{ fontSize: 20, fontStyle: 'italic', marginTop: 14 }}>
+            {isArgentina ? '$' : 'US$'}
+          </sup>
+          {isArgentina ? '14.999' : '29'}
+          <sub
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 12,
+              fontWeight: 400,
+              alignSelf: 'flex-end',
+              marginBottom: 12,
+              color: 'var(--ink-2)',
+              letterSpacing: '0.04em',
+            }}
+          >
+            / mes
+          </sub>
+        </div>
+        <div
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 12,
+            lineHeight: 1.9,
+            borderTop: '1px solid var(--line)',
+            borderBottom: '1px solid var(--line)',
+            padding: '12px 0',
+          }}
+        >
+          {[
+            'web ilimitada en {nombre}.cloudweb.app',
+            'conversaciones ilimitadas con Lúa',
+            'dominio propio cuando quieras',
+            'analítica sin cookies',
+            'soporte humano, en castellano',
+            'cancelás cuando querés',
+          ].map(item => (
+            <div key={item} style={{ display: 'flex', gap: 10, color: 'var(--ink)' }}>
+              <span style={{ color: 'var(--ink-3)' }}>—</span>
+              {item}
+            </div>
+          ))}
+        </div>
+        <Link
+          href="/login"
+          style={{
+            display: 'block',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
+            padding: 14,
+            background: 'var(--ink-strong)',
+            color: 'var(--bg)',
+            textAlign: 'center',
+          }}
+        >
+          empezar {trialDays} días gratis →
+        </Link>
+        <div
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            letterSpacing: '0.08em',
+            color: 'var(--ink-3)',
+            textAlign: 'center',
+          }}
+        >
+          sin tarjeta hasta el día {trialDays + 1}
+        </div>
+      </div>
+
+      <style>{`
+        .price-section {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr 1fr;
+          gap: 0;
+        }
+        @media (max-width: 900px) {
+          .price-section {
+            grid-template-columns: 1fr 1fr !important;
+          }
+          .price-section > div:first-child { grid-column: 1; padding-right: 20px; }
+          .price-section > div:nth-child(2) { display: none; }
+          .price-section > div:last-child { grid-column: 2; transform: none; }
+        }
+        @media (max-width: 560px) {
+          .price-section { grid-template-columns: 1fr !important; }
+          .price-section > div:first-child { grid-column: 1; padding-right: 0; }
+          .price-section > div:last-child { grid-column: 1; transform: none; margin-top: 20px; }
+        }
+      `}</style>
+    </section>
+  );
+}
+
+/* =========================================================================
+   FINAL CTA
+   ========================================================================= */
+function FinalCTA({ trialDays }: { trialDays: number }) {
+  return (
+    <section
+      style={{
+        padding: '160px 28px 80px',
+        borderTop: '1px solid var(--line-hard)',
+      }}
+    >
+      <h2
+        style={{
+          fontFamily: 'var(--font-fraunces, var(--font-display))',
+          fontWeight: 300,
+          fontSize: 'clamp(4rem, 16vw, 16rem)',
+          lineHeight: 0.82,
+          letterSpacing: '-0.06em',
+          color: 'var(--ink-strong)',
+        }}
+      >
+        Empezá.
+        <br />
+        <em style={{ fontStyle: 'italic', fontWeight: 400 }}>Hablá.</em>
+      </h2>
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          marginTop: 60,
+          flexWrap: 'wrap',
+          gap: 20,
+        }}
+      >
+        <Link
+          href="/login"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 10,
+            fontFamily: 'var(--font-mono)',
+            fontSize: 13,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            padding: '18px 26px',
+            background: 'var(--ink-strong)',
+            color: 'var(--bg)',
+          }}
+        >
+          crear mi sitio gratis →
+        </Link>
+        <p
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            color: 'var(--ink-2)',
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            maxWidth: '34ch',
+            lineHeight: 1.7,
+          }}
+        >
+          {trialDays} días de prueba. Después, podés cancelar en cualquier momento.
+          Tu web, siempre tuya.
+        </p>
       </div>
     </section>
   );
 }
 
 /* =========================================================================
-   Final CTA
+   Helpers
    ========================================================================= */
-function FinalCTASection() {
+function SecLabel({ num, right }: { num: string; right: string }) {
   return (
-    <section className="border-t border-line px-5 py-20 text-center md:px-10 md:py-32">
-      <div className="mx-auto w-full max-w-canvas">
-        <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink-mute">
-          Listo para empezar
-        </p>
-        <h2 className="mx-auto mt-4 max-w-[14ch] font-display text-[clamp(2.2rem,6vw,4.5rem)] leading-[1.0] tracking-display text-ink-strong">
-          Tu web en cinco minutos. No la semana que viene.
-        </h2>
-        <p className="mx-auto mt-5 max-w-[440px] text-base leading-body text-ink-mute">
-          Describe tu negocio en una frase. Lúa hace el resto.
-        </p>
-        <Link
-          href="/login"
-          className="mt-8 inline-flex items-center gap-2 rounded-sm bg-ink-strong px-7 py-3.5 text-[15px] text-canvas-pure transition-all duration-200 hover:bg-[#333333] active:scale-[0.97]"
-        >
-          Crear mi sitio
-          <Icon name="arrow-right" size={16} />
-        </Link>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'baseline',
+        fontFamily: 'var(--font-mono)',
+        fontSize: 10,
+        letterSpacing: '0.14em',
+        textTransform: 'uppercase',
+        borderTop: '1px solid var(--line-hard)',
+        padding: '12px 0',
+        color: 'var(--ink-strong)',
+      }}
+    >
+      <span>[ {num} ]</span>
+      <span style={{ color: 'var(--ink-2)' }}>{right}</span>
+    </div>
+  );
+}
+
+function BentoCell({
+  className,
+  tag,
+  children,
+  accent,
+  inverted,
+}: {
+  className: string;
+  tag: string;
+  children: React.ReactNode;
+  accent?: boolean;
+  inverted?: boolean;
+}) {
+  return (
+    <div className={`bento-cell ${className} ${inverted ? 'inverted' : ''} ${accent ? 'bento-accent' : ''}`}>
+      <div
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10,
+          letterSpacing: '0.12em',
+          textTransform: 'uppercase',
+          color: inverted ? 'rgba(17,17,17,0.6)' : 'var(--ink-2)',
+        }}
+      >
+        {tag}
       </div>
-    </section>
+      {children}
+    </div>
   );
 }

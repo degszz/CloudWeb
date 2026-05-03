@@ -26,6 +26,7 @@ const config: Config = {
         'ink-mute': 'var(--ink-mute)',
         'ink-faint': 'var(--ink-faint)',
         line: 'var(--line)',
+        'line-hard': 'var(--line-hard)',
         'line-soft': 'var(--line-soft)',
         'accent-red-bg': 'var(--accent-red-bg)',
         'accent-red-fg': 'var(--accent-red-fg)',
