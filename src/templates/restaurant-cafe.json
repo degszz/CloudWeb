@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "theme": {
+    "accent": "warm-bone",
+    "headingFont": "instrument-serif",
+    "bodyFont": "geist-sans"
+  },
+  "pages": [
+    {
+      "slug": "/",
+      "metadata": {
+        "title": "Café",
+        "description": "Café de especialidad, repostería diaria y un sitio donde quedarse un rato."
+      },
+      "sections": [
+        {
+          "id": "tpl_rc_hero",
+          "type": "hero",
+          "variant": "centered",
+          "props": {
+            "eyebrow": "Café de especialidad",
+            "title": "Café como debería ser.",
+            "subtitle": "Tostado propio, repostería de obrador y un sitio donde quedarte. Lo encuentras a dos calles de la plaza.",
+            "primaryCta": { "label": "Ver carta", "href": "#carta" },
+            "secondaryCta": { "label": "Cómo llegar", "href": "#contacto" }
+          }
+        },
+        {
+          "id": "tpl_rc_features",
+          "type": "features",
+          "variant": "bento",
+          "props": {
+            "eyebrow": "Lo que hacemos",
+            "title": "Tres cosas que sí controlamos.",
+            "items": [
+              {
+                "icon": "coffee",
+                "title": "Tostamos en casa",
+                "body": "El grano llega verde y lo tostamos cada semana en una Probat de 5 kg. La fecha de tueste va escrita en la bolsa."
+              },
+              {
+                "icon": "heart",
+                "title": "Repostería de obrador",
+                "body": "Hecha cada mañana antes de abrir."
+              },
+              {
+                "icon": "wifi",
+                "title": "Wifi rápido",
+                "body": "Mesas grandes y enchufes en cada una."
+              },
+              {
+                "icon": "clock",
+                "title": "Catas mensuales",
+                "body": "Primer sábado de cada mes, plazas limitadas."
+              }
+            ]
+          }
+        },
+        {
+          "id": "tpl_rc_testimonial",
+          "type": "testimonials",
+          "variant": "single-quote",
+          "props": {
+            "items": [
+              {
+                "quote": "Es uno de esos sitios a los que vas pensando que es solo a por un café y acabas quedándote toda la tarde.",
+                "author": "Sara Lozano",
+                "role": "Cliente desde 2021"
+              }
+            ]
+          }
+        },
+        {
+          "id": "tpl_rc_contact",
+          "type": "contact",
+          "variant": "address-hours",
+          "props": {
+            "eyebrow": "Visítanos",
+            "title": "Te esperamos.",
+            "address": "Calle Ejemplo 22 · Centro",
+            "phone": "+34 900 000 000",
+            "email": "hola@tucafe.com",
+            "hours": [
+              { "days": "Lunes a viernes", "hours": "08:00 - 20:00" },
+              { "days": "Sábados", "hours": "09:00 - 21:00" },
+              { "days": "Domingos", "hours": "10:00 - 18:00" }
+            ]
+          }
+        },
+        {
+          "id": "tpl_rc_footer",
+          "type": "footer",
+          "variant": "minimal",
+          "props": {
+            "brand": "Tu Café",
+            "links": [
+              { "label": "Carta", "href": "#carta" },
+              { "label": "Visítanos", "href": "#contacto" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

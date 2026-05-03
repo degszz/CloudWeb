@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "theme": {
+    "accent": "warm-bone",
+    "headingFont": "instrument-serif",
+    "bodyFont": "geist-sans"
+  },
+  "pages": [
+    {
+      "slug": "/",
+      "metadata": {
+        "title": "Portfolio",
+        "description": "Trabajo de diseño, ilustración y dirección creativa."
+      },
+      "sections": [
+        {
+          "id": "tpl_pm_hero",
+          "type": "hero",
+          "variant": "centered",
+          "props": {
+            "eyebrow": "Portfolio",
+            "title": "Hago marcas que las personas reconocen.",
+            "subtitle": "Identidad, ilustración y dirección creativa para proyectos que tienen algo que contar.",
+            "primaryCta": { "label": "Ver trabajos", "href": "#trabajos" },
+            "secondaryCta": { "label": "Contactar", "href": "#contacto" }
+          }
+        },
+        {
+          "id": "tpl_pm_features",
+          "type": "features",
+          "variant": "three-col-icons",
+          "props": {
+            "eyebrow": "Lo que hago",
+            "title": "Tres formas de trabajar juntos.",
+            "items": [
+              {
+                "icon": "sparkle",
+                "title": "Identidad de marca",
+                "body": "Logotipo, sistema visual y aplicaciones para estudios, restaurantes y proyectos editoriales."
+              },
+              {
+                "icon": "image",
+                "title": "Ilustración",
+                "body": "Ilustraciones a la carta para libros, prensa y campañas. Estilo línea continua y color reducido."
+              },
+              {
+                "icon": "list",
+                "title": "Dirección creativa",
+                "body": "Acompañamiento durante 3-6 meses para equipos pequeños que están construyendo su lenguaje visual."
+              }
+            ]
+          }
+        },
+        {
+          "id": "tpl_pm_testimonial",
+          "type": "testimonials",
+          "variant": "single-quote",
+          "props": {
+            "items": [
+              {
+                "quote": "Trabajar con ella fue lo más cerca que he estado de tener un cofundador de diseño. Devolvió el doble de lo que le pedí.",
+                "author": "Pauline Roca",
+                "role": "Fundadora, editorial Mareas"
+              }
+            ]
+          }
+        },
+        {
+          "id": "tpl_pm_contact",
+          "type": "contact",
+          "variant": "address-hours",
+          "props": {
+            "eyebrow": "Contacto",
+            "title": "Hablamos del proyecto en una llamada de 20 minutos.",
+            "intro": "Cuéntame en una frase qué quieres y cuándo lo necesitas. Respondo en menos de 24 horas.",
+            "email": "hola@tuestudio.com"
+          }
+        },
+        {
+          "id": "tpl_pm_footer",
+          "type": "footer",
+          "variant": "minimal",
+          "props": {
+            "brand": "Tu Estudio",
+            "links": [
+              { "label": "Trabajos", "href": "#trabajos" },
+              { "label": "Sobre mí", "href": "#sobre" },
+              { "label": "Contacto", "href": "#contacto" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "theme": {
+    "accent": "warm-bone",
+    "headingFont": "instrument-serif",
+    "bodyFont": "geist-sans"
+  },
+  "pages": [
+    {
+      "slug": "/",
+      "metadata": {
+        "title": "Mi sitio",
+        "description": ""
+      },
+      "sections": [
+        {
+          "id": "tpl_bk_hero",
+          "type": "hero",
+          "variant": "centered",
+          "props": {
+            "title": "Aquí va el titular principal.",
+            "subtitle": "En una o dos frases, qué haces y para quién. Cuando le digas a Lúa de qué va tu proyecto, esto se actualizará."
+          }
+        },
+        {
+          "id": "tpl_bk_contact",
+          "type": "contact",
+          "variant": "address-hours",
+          "props": {
+            "title": "Contacto",
+            "intro": "Cuéntame en una frase qué necesitas y te respondo en menos de 24 horas.",
+            "email": "tu@email.com"
+          }
+        },
+        {
+          "id": "tpl_bk_footer",
+          "type": "footer",
+          "variant": "minimal",
+          "props": {
+            "brand": "Mi sitio"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '../styles/tokens.css';
+
+/*
+ * Sobreescribir variables de fuente de tokens.css con las que inyecta
+ * next/font (que generan nombres únicos en cada build).
+ */
+:root {
+  --font-display: var(--font-instrument-serif), 'Lyon Text', Georgia, serif;
+  --font-sans: var(--font-geist-sans), 'SF Pro Display', system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), 'SF Mono', monospace;
+}
+
+/* =========================================================================
+   Animaciones globales
+   minimalist_ui §7: solo transform y opacity, sin layout-triggering props.
+   ========================================================================= */
+@keyframes cw-bounce {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  40% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+/* Reduce motion: desactiva todo cuando el usuario lo pide */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

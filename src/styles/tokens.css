@@ -1,0 +1,92 @@
+/**
+ * CloudWeb — Tokens visuales
+ *
+ * Fuente única de verdad para colores, tipografía y espaciado.
+ * Sigue minimalist_ui.md sin excepciones.
+ *
+ * Reglas duras (minimalist_ui §2):
+ *   - Sin Inter / Roboto / Open Sans
+ *   - Sin Lucide / Feather / Heroicons (usamos Phosphor)
+ *   - Sin sombras pesadas (shadow-md+ prohibido)
+ *   - Sin gradientes, neón, glassmorphism
+ *   - Sin emojis en UI
+ *   - Sin "John Doe" / "Acme" / "Lorem Ipsum"
+ *   - Sin clichés ("Eleva", "Seamless", "Unleash"...)
+ */
+
+@layer base {
+  :root {
+    /* === Lienzo / superficies === */
+    --canvas: #fbfbfa;            /* Hueso cálido, fondo principal */
+    --canvas-pure: #ffffff;
+    --surface: #ffffff;           /* Tarjetas */
+    --surface-warm: #f9f9f8;      /* Tarjetas alternativas */
+    --surface-bone: #f7f6f3;      /* Bloques destacados */
+
+    /* === Texto === */
+    --ink: #2f3437;               /* Cuerpo: nunca negro absoluto */
+    --ink-strong: #111111;        /* Titulares + CTA primario */
+    --ink-mute: #787774;          /* Texto secundario */
+    --ink-faint: #9b9a97;         /* Captions / metadata */
+
+    /* === Bordes y divisores === */
+    --line: #eaeaea;              /* Único divisor estructural */
+    --line-soft: rgba(0, 0, 0, 0.06);
+
+    /* === Acentos pastel (uso semántico, escasos) === */
+    --accent-red-bg: #fdebec;
+    --accent-red-fg: #9f2f2d;
+    --accent-blue-bg: #e1f3fe;
+    --accent-blue-fg: #1f6c9f;
+    --accent-green-bg: #edf3ec;
+    --accent-green-fg: #346538;
+    --accent-yellow-bg: #fbf3db;
+    --accent-yellow-fg: #956400;
+
+    /* === Tipografía === */
+    --font-display: 'Instrument Serif', 'Lyon Text', 'Playfair Display', Georgia, serif;
+    --font-sans: 'Geist Sans', 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', 'SF Mono', 'JetBrains Mono', monospace;
+
+    /* === Sombra (casi inexistente — usar con moderación) === */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.04);
+    /* shadow-lg+ prohibido */
+
+    /* === Radios === */
+    --radius-sm: 4px;             /* Botones, kbd */
+    --radius-md: 8px;              /* Tarjetas pequeñas */
+    --radius-lg: 12px;             /* Tarjetas grandes — máximo */
+    --radius-pill: 9999px;         /* Solo para tags/badges, NO para CTAs */
+
+    /* === Tipografía base === */
+    --leading-body: 1.6;
+    --tracking-display: -0.03em;
+    --tracking-caps: 0.05em;
+  }
+
+  /*
+   * Sin tema oscuro en MVP (decisión: dark mode = WONT).
+   * Si más adelante se añade, será un override completo de los tokens.
+   */
+
+  html {
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    line-height: var(--leading-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Reset selectivo */
+  body {
+    background: var(--canvas);
+    color: var(--ink);
+  }
+
+  ::selection {
+    background: var(--accent-yellow-bg);
+    color: var(--ink-strong);
+  }
+}

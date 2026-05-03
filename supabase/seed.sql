@@ -1,0 +1,36 @@
+-- =========================================================================
+-- seed.sql
+--
+-- Datos de seed para desarrollo local. Se ejecuta automáticamente
+-- después de las migraciones cuando corres `supabase db reset`.
+--
+-- ⚠️ En producción, este archivo NO se ejecuta. Solo para dev.
+-- =========================================================================
+
+-- Para crear un usuario de prueba en local, lo más limpio es signup
+-- desde la propia UI (que dispara handle_new_user). Pero si quieres
+-- seedearlo programáticamente:
+--
+-- 1. Crea un usuario en auth.users vía Supabase CLI o SQL:
+--    insert into auth.users (id, email, raw_user_meta_data)
+--    values (
+--      'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+--      'dev@cloudweb.local',
+--      '{"full_name": "Dev User"}'::jsonb
+--    );
+--
+-- 2. El trigger handle_new_user crea el profile automáticamente.
+--
+-- 3. Crea un sitio asociado:
+--    insert into public.sites (user_id, slug, name)
+--    values (
+--      'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+--      'demo-cafe',
+--      'Café Demo'
+--    );
+--
+-- En MVP no hace falta más. El builder se rellena cuando el usuario
+-- conversa con Lúa.
+
+-- Sin INSERTs por defecto: dejar la base limpia para que el primer
+-- signup real sea el primer registro.

@@ -1,0 +1,136 @@
+{
+  "version": 1,
+  "theme": {
+    "accent": "pale-blue",
+    "headingFont": "instrument-serif",
+    "bodyFont": "geist-sans"
+  },
+  "pages": [
+    {
+      "slug": "/",
+      "metadata": {
+        "title": "Servicios",
+        "description": "Consultoría especializada para equipos que están construyendo algo nuevo."
+      },
+      "sections": [
+        {
+          "id": "tpl_sw_hero",
+          "type": "hero",
+          "variant": "split-image-right",
+          "props": {
+            "eyebrow": "Consultoría",
+            "title": "Equipos pequeños, decisiones grandes.",
+            "subtitle": "Acompaño a fundadores y heads of product en los seis primeros meses de un producto nuevo. Discovery, definición, primeros experimentos.",
+            "primaryCta": { "label": "Ver cómo trabajo", "href": "#proceso" },
+            "secondaryCta": { "label": "Pedir una llamada", "href": "#contacto" }
+          }
+        },
+        {
+          "id": "tpl_sw_features",
+          "type": "features",
+          "variant": "three-col-icons",
+          "props": {
+            "eyebrow": "Cómo trabajo",
+            "title": "Tres pasos, sin sorpresas.",
+            "items": [
+              {
+                "icon": "search",
+                "title": "Discovery (semanas 1-2)",
+                "body": "Entrevistas con tu equipo, revisión de datos y mapa del problema real. Sale un documento de 5-7 páginas que cualquiera del equipo puede leer."
+              },
+              {
+                "icon": "list",
+                "title": "Definición (semana 3)",
+                "body": "Convertimos hallazgos en hipótesis verificables y priorizamos qué experimentar primero. OKRs y métricas concretas."
+              },
+              {
+                "icon": "sparkle",
+                "title": "Sprint de validación (semanas 4-6)",
+                "body": "Ejecución de un experimento real con usuarios. Aprendizajes documentados y plan para los siguientes 90 días."
+              }
+            ]
+          }
+        },
+        {
+          "id": "tpl_sw_testimonials",
+          "type": "testimonials",
+          "variant": "three-col",
+          "props": {
+            "title": "Equipos con los que trabajé.",
+            "items": [
+              {
+                "quote": "Llegamos con tres ideas y salimos con una clara y dos descartadas con datos. Eso vale meses.",
+                "author": "Nadia Cortés",
+                "role": "Head of Product, Tablo"
+              },
+              {
+                "quote": "Su discovery fue duro de leer pero nos ahorró construir algo que nadie usaría. Lo recomiendo a cualquier founder técnico.",
+                "author": "Diego Salas",
+                "role": "Co-fundador, Cinco Mares"
+              },
+              {
+                "quote": "Es de los pocos consultores que se va antes de tiempo si ve que el equipo ya puede solo. Eso lo dice todo.",
+                "author": "Helena Pich",
+                "role": "CTO, Marca Loop"
+              }
+            ]
+          }
+        },
+        {
+          "id": "tpl_sw_faq",
+          "type": "faq",
+          "variant": "accordion-flat",
+          "props": {
+            "eyebrow": "Antes de escribirme",
+            "title": "Lo que la gente suele preguntar.",
+            "items": [
+              {
+                "question": "¿Cuál es el rango de precios?",
+                "answer": "Engagements de 6 semanas desde 12.000 €. Engagements largos (3-6 meses) tienen tarifa mensual reducida. Trabajo con tres clientes a la vez como máximo."
+              },
+              {
+                "question": "¿Trabajas con equipos remotos?",
+                "answer": "Sí. La mayoría son remotos. Hago entre 2 y 4 viajes al cliente durante el engagement si está en Europa."
+              },
+              {
+                "question": "¿En qué sectores trabajas?",
+                "answer": "B2B SaaS, herramientas para creadores, fintech para profesionales independientes. Evito healthcare y retail físico — no es donde aporto más valor."
+              },
+              {
+                "question": "¿Aceptas equity en lugar de fee?",
+                "answer": "Solo combinado: 80% fee + 20% en equity para fases pre-seed o seed. Necesito el cash para mantener el modelo de tres clientes a la vez."
+              }
+            ]
+          }
+        },
+        {
+          "id": "tpl_sw_contact",
+          "type": "contact",
+          "variant": "form-and-map",
+          "props": {
+            "eyebrow": "Llamada de 20 minutos",
+            "title": "Cuéntame el problema en tres frases.",
+            "intro": "Si encaja, te respondo con dos huecos para una llamada en menos de 48 horas. Si no encaja, te recomiendo a alguien que sí.",
+            "email": "hola@tuconsultoria.com",
+            "address": "Trabajo desde Madrid · Disponible en Europa"
+          }
+        },
+        {
+          "id": "tpl_sw_footer",
+          "type": "footer",
+          "variant": "three-col",
+          "props": {
+            "brand": "Tu Consultoría",
+            "tagline": "Discovery y validación para los primeros seis meses de un producto.",
+            "links": [
+              { "label": "Cómo trabajo", "href": "#proceso" },
+              { "label": "Casos", "href": "#casos" },
+              { "label": "Contacto", "href": "#contacto" }
+            ],
+            "email": "hola@tuconsultoria.com"
+          }
+        }
+      ]
+    }
+  ]
+}
