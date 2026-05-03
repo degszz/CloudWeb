@@ -16,6 +16,7 @@ import { siteContentSchema } from '@/lib/builder/schema';
 import { publishSiteSnapshot } from '@/lib/publishing/snapshot';
 import { getTemplate, isValidTemplateId } from '@/templates';
 import { getPublishedUrl } from '@/lib/utils';
+import type { SiteContent } from '@/types/builder';
 
 /**
  * Implementación de las 8 tools del agente.
@@ -129,7 +130,7 @@ const addSectionHandler: ToolHandler = async (ctx, input) => {
       };
     }
 
-    const op = addSection(parsed.data, {
+    const op = addSection(parsed.data as SiteContent, {
       type: input.type as string,
       variant: input.variant as string | undefined,
       props: (input.props as Record<string, unknown>) ?? {},
@@ -185,7 +186,7 @@ const updateSectionHandler: ToolHandler = async (ctx, input) => {
       };
     }
 
-    const op = updateSection(parsed.data, {
+    const op = updateSection(parsed.data as SiteContent, {
       sectionId: input.sectionId as string,
       propsPatch: input.propsPatch as Record<string, unknown> | undefined,
       variant: input.variant as string | undefined,
@@ -234,7 +235,7 @@ const removeSectionHandler: ToolHandler = async (ctx, input) => {
       };
     }
 
-    const op = removeSection(parsed.data, {
+    const op = removeSection(parsed.data as SiteContent, {
       sectionId: input.sectionId as string,
     });
 
@@ -272,7 +273,7 @@ const reorderSectionsHandler: ToolHandler = async (ctx, input) => {
       };
     }
 
-    const op = reorderSections(parsed.data, {
+    const op = reorderSections(parsed.data as SiteContent, {
       orderedIds: input.orderedIds as string[],
     });
 

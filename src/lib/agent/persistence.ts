@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { createAdminClient } from '@/lib/supabase/admin';
+import type { Json } from '@/types/db';
 
 import type {
   PersistedMessage,
@@ -119,7 +120,7 @@ export async function appendMessage(
   const { error } = await supabase.from('messages').insert({
     conversation_id: conversationId,
     role: message.role,
-    content: message.content,
+    content: message.content as Json,
     model: message.model ?? null,
     input_tokens: message.inputTokens ?? null,
     output_tokens: message.outputTokens ?? null,
@@ -166,7 +167,7 @@ export async function recordTrace(input: RecordTraceInput): Promise<string> {
       site_id: input.siteId,
       trigger: input.trigger ?? 'user_message',
       iterations: input.telemetry.iterations,
-      tools_called: input.telemetry.toolsCalled,
+      tools_called: input.telemetry.toolsCalled as unknown as Json,
       total_input_tokens: input.telemetry.totalInputTokens,
       total_output_tokens: input.telemetry.totalOutputTokens,
       total_cache_read_tokens: input.telemetry.totalCacheReadTokens,
@@ -209,7 +210,7 @@ export async function writeSiteContent(
   const { error } = await supabase
     .from('sites')
     .update({
-      content_json: contentJson,
+      content_json: contentJson as Json,
       content_version: newVersion,
       updated_at: new Date().toISOString(),
     })

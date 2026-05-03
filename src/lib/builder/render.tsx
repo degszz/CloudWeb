@@ -52,7 +52,7 @@ export function renderSite(rawContent: unknown): RenderResult {
 function RenderSection({
   section,
 }: {
-  section: { id: string; type: string; variant: string; props: unknown };
+  section: { id: string; type: string; variant: string; props?: unknown };
 }) {
   const variants = blockRegistry[section.type as SectionType];
   if (!variants) return null;

@@ -1,31 +1,676 @@
-/**
- * Tipos de la base de datos Supabase.
- *
- * Este archivo se regenera automáticamente con:
- *
- *   npm run db:types
- *
- * (que ejecuta `supabase gen types typescript --local > src/types/db.ts`)
- *
- * El stub vacío de aquí permite que el scaffolding compile antes de
- * aplicar las migraciones. Sustitúyelo en cuanto las migraciones
- * estén corriendo en local.
- */
-
 export type Json =
   | string
   | number
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[];
+  | Json[]
 
-export interface Database {
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   public: {
-    Tables: Record<string, never>;
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
-    Enums: Record<string, never>;
-    CompositeTypes: Record<string, never>;
-  };
+    Tables: {
+      agent_traces: {
+        Row: {
+          conversation_id: string | null
+          created_at: string
+          error_detail: string | null
+          eval_label: string | null
+          eval_marked_at: string | null
+          id: string
+          iterations: number
+          site_id: string | null
+          status: Database["public"]["Enums"]["trace_status"]
+          tools_called: Json
+          total_cache_creation_tokens: number | null
+          total_cache_read_tokens: number | null
+          total_cost_usd: number | null
+          total_input_tokens: number | null
+          total_latency_ms: number | null
+          total_output_tokens: number | null
+          trigger: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string
+          error_detail?: string | null
+          eval_label?: string | null
+          eval_marked_at?: string | null
+          id?: string
+          iterations?: number
+          site_id?: string | null
+          status: Database["public"]["Enums"]["trace_status"]
+          tools_called?: Json
+          total_cache_creation_tokens?: number | null
+          total_cache_read_tokens?: number | null
+          total_cost_usd?: number | null
+          total_input_tokens?: number | null
+          total_latency_ms?: number | null
+          total_output_tokens?: number | null
+          trigger?: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string
+          error_detail?: string | null
+          eval_label?: string | null
+          eval_marked_at?: string | null
+          id?: string
+          iterations?: number
+          site_id?: string | null
+          status?: Database["public"]["Enums"]["trace_status"]
+          tools_called?: Json
+          total_cache_creation_tokens?: number | null
+          total_cache_read_tokens?: number | null
+          total_cost_usd?: number | null
+          total_input_tokens?: number | null
+          total_latency_ms?: number | null
+          total_output_tokens?: number | null
+          trigger?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_traces_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_traces_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_traces_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          id: string
+          site_id: string
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          site_id: string
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          site_id?: string
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mercadopago_preapprovals: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          date_created: string | null
+          id: string
+          last_modified: string | null
+          mp_status: string
+          next_payment_date: string | null
+          payer_email: string | null
+          payer_id: string | null
+          plan_id: string | null
+          subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          date_created?: string | null
+          id: string
+          last_modified?: string | null
+          mp_status: string
+          next_payment_date?: string | null
+          payer_email?: string | null
+          payer_id?: string | null
+          plan_id?: string | null
+          subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          date_created?: string | null
+          id?: string
+          last_modified?: string | null
+          mp_status?: string
+          next_payment_date?: string | null
+          payer_email?: string | null
+          payer_id?: string | null
+          plan_id?: string | null
+          subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mercadopago_preapprovals_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mercadopago_preapprovals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          cache_creation_tokens: number | null
+          cache_read_tokens: number | null
+          content: Json
+          conversation_id: string
+          cost_usd: number | null
+          created_at: string
+          id: string
+          input_tokens: number | null
+          latency_ms: number | null
+          model: string | null
+          output_tokens: number | null
+          prompt_version: string | null
+          role: Database["public"]["Enums"]["message_role"]
+          stop_reason: string | null
+        }
+        Insert: {
+          cache_creation_tokens?: number | null
+          cache_read_tokens?: number | null
+          content: Json
+          conversation_id: string
+          cost_usd?: number | null
+          created_at?: string
+          id?: string
+          input_tokens?: number | null
+          latency_ms?: number | null
+          model?: string | null
+          output_tokens?: number | null
+          prompt_version?: string | null
+          role: Database["public"]["Enums"]["message_role"]
+          stop_reason?: string | null
+        }
+        Update: {
+          cache_creation_tokens?: number | null
+          cache_read_tokens?: number | null
+          content?: Json
+          conversation_id?: string
+          cost_usd?: number | null
+          created_at?: string
+          id?: string
+          input_tokens?: number | null
+          latency_ms?: number | null
+          model?: string | null
+          output_tokens?: number | null
+          prompt_version?: string | null
+          role?: Database["public"]["Enums"]["message_role"]
+          stop_reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          stripe_customer_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id: string
+          stripe_customer_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          stripe_customer_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      publications: {
+        Row: {
+          content_snapshot: Json
+          id: string
+          published_at: string
+          published_description: string | null
+          published_slug: string
+          published_title: string
+          site_id: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          content_snapshot: Json
+          id?: string
+          published_at?: string
+          published_description?: string | null
+          published_slug: string
+          published_title: string
+          site_id: string
+          user_id: string
+          version: number
+        }
+        Update: {
+          content_snapshot?: Json
+          id?: string
+          published_at?: string
+          published_description?: string | null
+          published_slug?: string
+          published_title?: string
+          site_id?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "publications_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "publications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reserved_slugs: {
+        Row: {
+          slug: string
+        }
+        Insert: {
+          slug: string
+        }
+        Update: {
+          slug?: string
+        }
+        Relationships: []
+      }
+      sites: {
+        Row: {
+          content_json: Json
+          content_version: number
+          created_at: string
+          description: string | null
+          id: string
+          is_published: boolean
+          last_published_at: string | null
+          last_published_version: number | null
+          name: string
+          slug: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content_json?: Json
+          content_version?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_published?: boolean
+          last_published_at?: string | null
+          last_published_version?: number | null
+          name: string
+          slug: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content_json?: Json
+          content_version?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_published?: boolean
+          last_published_at?: string | null
+          last_published_version?: number | null
+          name?: string
+          slug?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sites_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean
+          created_at: string
+          currency: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          price_id: string
+          provider: Database["public"]["Enums"]["payment_provider"]
+          quantity: number
+          status: Database["public"]["Enums"]["subscription_status"]
+          trial_end: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean
+          created_at?: string
+          currency?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id: string
+          price_id: string
+          provider?: Database["public"]["Enums"]["payment_provider"]
+          quantity?: number
+          status: Database["public"]["Enums"]["subscription_status"]
+          trial_end?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean
+          created_at?: string
+          currency?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          price_id?: string
+          provider?: Database["public"]["Enums"]["payment_provider"]
+          quantity?: number
+          status?: Database["public"]["Enums"]["subscription_status"]
+          trial_end?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      agent_quota_status: {
+        Args: { check_user_id: string }
+        Returns: {
+          monthly_limit: number
+          remaining: number
+          status: Database["public"]["Enums"]["quota_status"]
+          used: number
+        }[]
+      }
+      get_published_site_by_slug: {
+        Args: { target_slug: string }
+        Returns: {
+          content: Json
+          description: string
+          publication_id: string
+          published_at: string
+          site_id: string
+          title: string
+        }[]
+      }
+      has_active_subscription: {
+        Args: { check_user_id: string }
+        Returns: boolean
+      }
+      monthly_agent_turns: { Args: { check_user_id: string }; Returns: number }
+    }
+    Enums: {
+      message_role: "user" | "assistant" | "tool"
+      payment_provider: "stripe" | "mercadopago"
+      quota_status: "ok" | "warning" | "exceeded"
+      subscription_status:
+        | "trialing"
+        | "active"
+        | "canceled"
+        | "incomplete"
+        | "incomplete_expired"
+        | "past_due"
+        | "unpaid"
+        | "paused"
+      trace_status:
+        | "success"
+        | "max_iterations"
+        | "tool_error"
+        | "guardrail_input_block"
+        | "guardrail_output_block"
+        | "rate_limited"
+        | "model_error"
+        | "quota_exceeded"
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
 }
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {
+      message_role: ["user", "assistant", "tool"],
+      payment_provider: ["stripe", "mercadopago"],
+      quota_status: ["ok", "warning", "exceeded"],
+      subscription_status: [
+        "trialing",
+        "active",
+        "canceled",
+        "incomplete",
+        "incomplete_expired",
+        "past_due",
+        "unpaid",
+        "paused",
+      ],
+      trace_status: [
+        "success",
+        "max_iterations",
+        "tool_error",
+        "guardrail_input_block",
+        "guardrail_output_block",
+        "rate_limited",
+        "model_error",
+        "quota_exceeded",
+      ],
+    },
+  },
+} as const

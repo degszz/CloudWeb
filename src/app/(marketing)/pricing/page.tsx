@@ -15,7 +15,7 @@ export default function PricingPage() {
         Un plan. Sin sorpresas.
       </h1>
       <p className="mt-4 max-w-prose text-base text-ink-mute">
-        14 días de prueba sin tarjeta. Después, ${plan.priceMonthlyUSD}/mes.
+        14 días de prueba sin tarjeta. Después, {plan.pricing.stripe.display}/mes.
         Cancela cuando quieras.
       </p>
 
@@ -24,7 +24,7 @@ export default function PricingPage() {
           {plan.name}
         </p>
         <p className="font-display text-[clamp(3rem,6vw,4.5rem)] leading-none tracking-display text-ink-strong">
-          ${plan.priceMonthlyUSD}
+          {plan.pricing.stripe.display}
           <span className="ml-1 font-sans text-base font-normal tracking-normal text-ink-mute">
             / mes
           </span>

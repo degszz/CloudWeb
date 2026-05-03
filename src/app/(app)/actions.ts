@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 
 import { createServerClient } from '@/lib/supabase/server';
 import { getTemplate } from '@/templates';
+import type { Json } from '@/types/db';
 
 /**
  * Crea un sitio nuevo para el usuario actual.
@@ -41,7 +42,7 @@ export async function createSiteAction(): Promise<void> {
       user_id: user.id,
       slug,
       name: 'Mi sitio',
-      content_json: blank,
+      content_json: blank as unknown as Json,
       content_version: 1,
     })
     .select('id')
@@ -56,7 +57,7 @@ export async function createSiteAction(): Promise<void> {
         user_id: user.id,
         slug: fallbackSlug,
         name: 'Mi sitio',
-        content_json: blank,
+        content_json: blank as unknown as Json,
         content_version: 1,
       })
       .select('id')

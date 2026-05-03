@@ -28,7 +28,7 @@ export async function POST(_request: NextRequest) {
   if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
 
   const plan = PLANS[DEFAULT_PLAN];
-  if (!plan.priceId) {
+  if (!plan.pricing.stripe.priceId) {
     return NextResponse.json(
       { error: 'Stripe Price ID no configurado' },
       { status: 500 }
@@ -59,7 +59,7 @@ export async function POST(_request: NextRequest) {
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: 'subscription',
-    line_items: [{ price: plan.priceId, quantity: 1 }],
+    line_items: [{ price: plan.pricing.stripe.priceId, quantity: 1 }],
     success_url: `${APP_URL}/dashboard?welcome=1`,
     cancel_url: `${APP_URL}/settings/billing`,
     subscription_data: { trial_period_days: plan.trialDays },

@@ -56,7 +56,6 @@ insert into public.reserved_slugs (slug) values
   ('cloudweb'),
   ('tu'),
   ('mi'),
-  ('mail'),
   ('hola'),
   ('about'),
   ('contact'),
