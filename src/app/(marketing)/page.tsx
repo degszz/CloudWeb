@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { CloudScrollLazy as CloudScroll } from '@/components/landing/cloud-scroll-lazy';
 import { HeroSceneLazy as HeroScene } from '@/components/landing/hero-scene-lazy';
 import { LuaChatLazy as LuaChat } from '@/components/landing/lua-chat-lazy';
 import { detectCountry } from '@/lib/geo';
@@ -13,6 +14,7 @@ export default async function LandingPage() {
   return (
     <>
       <Hero />
+      <CloudScroll />
       <Demo />
       <Features />
       <HowItWorks />

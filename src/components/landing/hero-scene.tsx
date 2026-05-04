@@ -3,8 +3,9 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * Hero 3D scene — Three.js cloud wireframe flotando.
- * Interactivo: sigue al mouse con suavidad, se puede arrastrar.
+ * Hero 3D scene — nube de partículas flotante.
+ * Las partículas se distribuyen en forma de nube (múltiples elipsoides superpuestas).
+ * Interactivo: sigue al mouse, se puede arrastrar.
  */
 export function HeroScene() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -23,10 +24,9 @@ export function HeroScene() {
       const W = container!.clientWidth;
       const H = container!.clientHeight;
 
-      // Scene
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100);
-      camera.position.set(0, 0, 6);
+      camera.position.set(0, 0, 7);
 
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(W, H);
@@ -34,80 +34,108 @@ export function HeroScene() {
       renderer.setClearColor(0x000000, 0);
       container!.appendChild(renderer.domElement);
 
-      // --- Cloud shape: cluster of spheres forming a cloud silhouette ---
+      // --- Cloud: particles distributed in cloud formation ---
       const cloudGroup = new THREE.Group();
 
-      // Cloud lobe positions (x, y, z, radius)
-      const lobes: [number, number, number, number][] = [
-        [0, 0, 0, 1.2],       // center
-        [-1.1, 0.3, 0, 0.9],  // left
-        [1.1, 0.2, 0, 1.0],   // right
-        [-0.5, 0.7, 0, 0.8],  // top-left
-        [0.5, 0.8, 0, 0.75],  // top-right
-        [0, 0.95, 0, 0.6],    // top-center
-        [-1.6, -0.1, 0, 0.6], // far left
-        [1.6, -0.1, 0, 0.65], // far right
-        [0, -0.3, 0.4, 0.7],  // front
-        [0, -0.2, -0.4, 0.7], // back
+      // Cloud lobes: [cx, cy, cz, rx, ry, rz, count]
+      // Each lobe is an ellipsoid of particles
+      const lobes: [number, number, number, number, number, number, number][] = [
+        [0,    0,    0,   1.6, 0.8, 0.9, 600],   // main body
+        [-1.2, 0.4,  0,   1.0, 0.7, 0.7, 300],   // left bump
+        [1.1,  0.35, 0,   1.1, 0.75, 0.7, 320],  // right bump
+        [-0.3, 0.8,  0,   0.8, 0.5, 0.6, 200],   // top-left
+        [0.5,  0.85, 0,   0.7, 0.45, 0.55, 180], // top-right
+        [0,    1.0,  0,   0.5, 0.35, 0.4, 120],   // crown
+        [-1.8, 0.0,  0,   0.5, 0.4, 0.5, 100],   // far left
+        [1.7,  0.05, 0,   0.55, 0.45, 0.5, 110],  // far right
+        [0,   -0.15, 0.5, 1.2, 0.5, 0.4, 200],   // front depth
+        [0,   -0.1, -0.5, 1.2, 0.5, 0.4, 200],   // back depth
       ];
 
-      // Wireframe lobes
-      lobes.forEach(([x, y, z, r]) => {
-        const geo = new THREE.SphereGeometry(r, 12, 10);
-        const mat = new THREE.MeshBasicMaterial({
+      const totalPoints = lobes.reduce((sum, l) => sum + l[6], 0);
+      const positions = new Float32Array(totalPoints * 3);
+      const sizes = new Float32Array(totalPoints);
+      let idx = 0;
+
+      for (const [cx, cy, cz, rx, ry, rz, count] of lobes) {
+        for (let i = 0; i < count; i++) {
+          // Uniform distribution inside ellipsoid
+          const u = Math.random();
+          const v = Math.random();
+          const w = Math.random();
+          const theta = u * 2 * Math.PI;
+          const phi = Math.acos(2 * v - 1);
+          const r = Math.cbrt(w); // cube root for uniform volume distribution
+
+          const x = cx + rx * r * Math.sin(phi) * Math.cos(theta);
+          const y = cy + ry * r * Math.sin(phi) * Math.sin(theta);
+          const z = cz + rz * r * Math.cos(phi);
+
+          positions[idx * 3] = x;
+          positions[idx * 3 + 1] = y;
+          positions[idx * 3 + 2] = z;
+
+          // Vary size: denser near center, smaller near edges
+          sizes[idx] = (1 - r * 0.7) * (0.02 + Math.random() * 0.025);
+          idx++;
+        }
+      }
+
+      const cloudGeo = new THREE.BufferGeometry();
+      cloudGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      cloudGeo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+      const cloudMat = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.03,
+        transparent: true,
+        opacity: 0.6,
+        sizeAttenuation: true,
+        depthWrite: false,
+      });
+      const cloudPoints = new THREE.Points(cloudGeo, cloudMat);
+      cloudGroup.add(cloudPoints);
+
+      // Outline wireframe: soft contour rings for structure
+      const outlineLobes: [number, number, number, number][] = [
+        [0, 0, 0, 1.6],
+        [-1.1, 0.35, 0, 1.0],
+        [1.0, 0.3, 0, 1.05],
+        [-0.3, 0.75, 0, 0.75],
+        [0.4, 0.8, 0, 0.65],
+      ];
+      outlineLobes.forEach(([ox, oy, oz, or]) => {
+        const ring = new THREE.RingGeometry(or * 0.95, or, 48);
+        const ringMat = new THREE.MeshBasicMaterial({
           color: 0xffffff,
-          wireframe: true,
           transparent: true,
-          opacity: 0.12,
+          opacity: 0.06,
+          side: THREE.DoubleSide,
         });
-        const mesh = new THREE.Mesh(geo, mat);
-        mesh.position.set(x, y, z);
-        cloudGroup.add(mesh);
+        const ringMesh = new THREE.Mesh(ring, ringMat);
+        ringMesh.position.set(ox, oy, oz);
+        cloudGroup.add(ringMesh);
       });
-
-      // Soft inner core (larger, very low opacity)
-      const coreGeo = new THREE.SphereGeometry(1.4, 16, 14);
-      const coreMat = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.04,
-      });
-      const core = new THREE.Mesh(coreGeo, coreMat);
-      core.position.set(0, 0.2, 0);
-      cloudGroup.add(core);
-
-      // Flat bottom — subtle line to ground the cloud
-      const bottomGeo = new THREE.PlaneGeometry(3.4, 0.01, 20, 1);
-      const bottomMat = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.06,
-      });
-      const bottom = new THREE.Mesh(bottomGeo, bottomMat);
-      bottom.position.set(0, -0.5, 0);
-      cloudGroup.add(bottom);
 
       scene.add(cloudGroup);
 
-      // Particles
-      const pCount = 120;
-      const pGeo = new THREE.BufferGeometry();
-      const positions = new Float32Array(pCount * 3);
-      for (let i = 0; i < pCount; i++) {
-        positions[i * 3]     = (Math.random() - 0.5) * 10;
-        positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-        positions[i * 3 + 2] = (Math.random() - 0.5) * 6;
+      // Background particles (ambient dust)
+      const bgCount = 80;
+      const bgGeo = new THREE.BufferGeometry();
+      const bgPos = new Float32Array(bgCount * 3);
+      for (let i = 0; i < bgCount; i++) {
+        bgPos[i * 3]     = (Math.random() - 0.5) * 14;
+        bgPos[i * 3 + 1] = (Math.random() - 0.5) * 10;
+        bgPos[i * 3 + 2] = (Math.random() - 0.5) * 6;
       }
-      pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      const pMat = new THREE.PointsMaterial({
+      bgGeo.setAttribute('position', new THREE.BufferAttribute(bgPos, 3));
+      const bgMat = new THREE.PointsMaterial({
         color: 0xffffff,
-        size: 0.02,
+        size: 0.015,
         transparent: true,
-        opacity: 0.35,
+        opacity: 0.25,
       });
-      scene.add(new THREE.Points(pGeo, pMat));
+      scene.add(new THREE.Points(bgGeo, bgMat));
 
       // Mouse interaction
       let targetX = 0, targetY = 0;
@@ -118,14 +146,14 @@ export function HeroScene() {
 
       const onMouseMove = (e: MouseEvent) => {
         if (isDragging) {
-          velocityX += (e.clientX - lastMX) * 0.01;
-          velocityY += (e.clientY - lastMY) * 0.01;
+          velocityX += (e.clientX - lastMX) * 0.008;
+          velocityY += (e.clientY - lastMY) * 0.008;
           lastMX = e.clientX;
           lastMY = e.clientY;
         } else {
           const rect = container!.getBoundingClientRect();
-          targetX = ((e.clientX - rect.left) / rect.width - 0.5) * 1.2;
-          targetY = -((e.clientY - rect.top) / rect.height - 0.5) * 1.2;
+          targetX = ((e.clientX - rect.left) / rect.width - 0.5) * 1.0;
+          targetY = -((e.clientY - rect.top) / rect.height - 0.5) * 1.0;
         }
       };
       const onMouseDown = (e: MouseEvent) => {
@@ -135,13 +163,12 @@ export function HeroScene() {
       };
       const onMouseUp = () => { isDragging = false; };
 
-      // Touch
       const onTouchMove = (e: TouchEvent) => {
         const t = e.touches[0];
         if (!t) return;
         const rect = container!.getBoundingClientRect();
-        targetX = ((t.clientX - rect.left) / rect.width - 0.5) * 1.0;
-        targetY = -((t.clientY - rect.top) / rect.height - 0.5) * 1.0;
+        targetX = ((t.clientX - rect.left) / rect.width - 0.5) * 0.8;
+        targetY = -((t.clientY - rect.top) / rect.height - 0.5) * 0.8;
       };
 
       container!.addEventListener('mousemove', onMouseMove);
@@ -152,28 +179,26 @@ export function HeroScene() {
       let t = 0;
       function animate() {
         raf = requestAnimationFrame(animate);
-        t += 0.006;
+        t += 0.005;
 
-        currentX += (targetX - currentX) * 0.04;
-        currentY += (targetY - currentY) * 0.04;
+        currentX += (targetX - currentX) * 0.03;
+        currentY += (targetY - currentY) * 0.03;
 
         if (isDragging) {
           cloudGroup.rotation.y += velocityX;
           cloudGroup.rotation.x += velocityY;
-          velocityX *= 0.92;
-          velocityY *= 0.92;
+          velocityX *= 0.93;
+          velocityY *= 0.93;
         } else {
-          cloudGroup.rotation.y = t * 0.15 + currentX * 0.6;
-          cloudGroup.rotation.x = currentY * 0.4;
-          // Gentle bob
-          cloudGroup.position.y = Math.sin(t * 0.8) * 0.08;
+          cloudGroup.rotation.y = t * 0.12 + currentX * 0.5;
+          cloudGroup.rotation.x = currentY * 0.3;
+          cloudGroup.position.y = Math.sin(t * 0.7) * 0.1;
         }
 
         renderer.render(scene, camera);
       }
       animate();
 
-      // Resize
       const ro = new ResizeObserver(() => {
         const W2 = container!.clientWidth;
         const H2 = container!.clientHeight;

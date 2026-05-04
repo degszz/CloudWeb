@@ -119,12 +119,12 @@ export default function MarketingLayout({
       </footer>
 
       <style>{`
-        /* Logo visibility — nav uses mix-blend-mode: difference so both logos
-           are always "white" visually. We swap which file shows based on theme
-           so the correct artwork appears when blend is removed (e.g. mobile). */
+        /* Logo: the nav has mix-blend-mode: difference, so both logos
+           get inverted. We show the dark logo on dark theme (white text → stays white
+           after difference on dark bg), and light logo on light theme. */
         .nav-logo-light { display: none; }
-        .nav-logo-dark  { display: block; }
-        [data-theme="light"] .nav-logo-light { display: block; }
+        .nav-logo-dark  { display: inline-block; }
+        [data-theme="light"] .nav-logo-light { display: inline-block; }
         [data-theme="light"] .nav-logo-dark  { display: none; }
 
         .nav-link:hover { opacity: 1 !important; }
@@ -132,6 +132,9 @@ export default function MarketingLayout({
         @media (max-width: 768px) {
           .nav-link { display: none !important; }
         }
+
+        /* Prevent horizontal scroll from hero canvas */
+        html, body { overflow-x: hidden; }
       `}</style>
     </div>
   );
