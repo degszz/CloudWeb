@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 /**
- * Shell de marketing con header + footer CloudWeb.
+ * Shell de marketing con header + footer nuweb.
  *
  * Lo usan las páginas interiores (pricing, terms, privacy, cookies).
  * La landing tiene su propio nav/footer B&W, así que NO usa esto.
@@ -15,7 +15,7 @@ export function MarketingShell({ children }: { children: React.ReactNode }) {
             href="/"
             className="font-display text-2xl tracking-display text-ink-strong"
           >
-            CloudWeb
+            nuweb
           </Link>
           <nav className="flex items-center gap-6 text-sm text-ink-mute">
             <Link href="/pricing" className="hover:text-ink-strong">
@@ -33,7 +33,7 @@ export function MarketingShell({ children }: { children: React.ReactNode }) {
       {children}
       <footer className="border-t border-line">
         <div className="mx-auto flex max-w-canvas flex-col items-start justify-between gap-4 px-6 py-10 text-sm text-ink-mute md:flex-row md:items-center">
-          <p>CloudWeb · Hecho con cuidado.</p>
+          <p>nuweb · Hecho con cuidado.</p>
           <div className="flex gap-6">
             <Link href="/terms">Términos</Link>
             <Link href="/privacy">Privacidad</Link>

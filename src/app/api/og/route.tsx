@@ -16,7 +16,7 @@ export const runtime = 'edge';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
-  const title = searchParams.get('title') ?? 'CloudWeb';
+  const title = searchParams.get('title') ?? 'nuweb';
   const subtitle =
     searchParams.get('subtitle') ?? 'Tu sitio web, creado en conversación.';
 
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
             fontFamily: 'monospace',
           }}
         >
-          cloudweb.app
+          nuweb.app
         </div>
 
         {/* Title */}

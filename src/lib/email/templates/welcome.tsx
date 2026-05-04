@@ -25,10 +25,10 @@ export function WelcomeEmail({ userEmail, dashboardUrl }: WelcomeEmailProps) {
   return (
     <Html>
       <Head />
-      <Preview>Tu cuenta de CloudWeb está lista</Preview>
+      <Preview>Tu cuenta de nuweb está lista</Preview>
       <Body style={body}>
         <Container style={container}>
-          <Heading style={h1}>Bienvenida a CloudWeb</Heading>
+          <Heading style={h1}>Bienvenida a nuweb</Heading>
 
           <Text style={paragraph}>
             Has creado tu cuenta con <strong>{userEmail}</strong>. Cuando
@@ -51,7 +51,7 @@ export function WelcomeEmail({ userEmail, dashboardUrl }: WelcomeEmailProps) {
 
           <Text style={signature}>
             Si te encallas en algo, responde a este email. Lo leo yo.
-            <br />— el equipo de CloudWeb
+            <br />— el equipo de nuweb
           </Text>
         </Container>
       </Body>

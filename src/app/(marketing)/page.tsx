@@ -93,7 +93,7 @@ function Hero() {
               <strong style={{ color: 'var(--ink)', fontWeight: 500 }}>v1.0</strong>
               {' '}· MVP
             </span>
-            <span style={{ color: 'var(--ink-3)' }}>tu-nombre.cloudweb.app</span>
+            <span style={{ color: 'var(--ink-3)' }}>tu-nombre.nuweb.app</span>
           </div>
 
           {/* Headline */}
@@ -263,7 +263,7 @@ function Demo() {
     { role: 'you', text: 'vitrina, eventos y un boletín mensual.' },
     { role: 'lua', text: 'Hecho. Tipografía editorial, fondo crudo, calendario abajo. Mirá a la derecha.' },
     { role: 'you', text: 'el título un poco más grande.' },
-    { role: 'lua', text: '¿Publicamos en subterranea.cloudweb.app?' },
+    { role: 'lua', text: '¿Publicamos en subterranea.nuweb.app?' },
   ];
 
   return (
@@ -359,7 +359,7 @@ function Demo() {
               />
             ))}
             <span style={{ marginLeft: 12, color: 'var(--ink-2)' }}>
-              subterranea.cloudweb.app
+              subterranea.nuweb.app
             </span>
           </div>
 
@@ -563,7 +563,7 @@ function Features() {
           >
             Un dominio{' '}
             <em style={{ fontStyle: 'italic', fontWeight: 400 }}>
-              {'{'}tu-nombre{'}'}.cloudweb.app
+              {'{'}tu-nombre{'}'}.nuweb.app
             </em>{' '}
             al instante.
           </div>
@@ -863,7 +863,7 @@ function HowItWorks() {
                 color: 'var(--ink-2)',
               }}
             >
-              <span>↳ mi-taller.cloudweb.app</span>
+              <span>↳ mi-taller.nuweb.app</span>
               <span>0.4s ttfb</span>
             </div>
           </div>
@@ -977,21 +977,21 @@ function HowItWorks() {
 function WhoUsesIt() {
   const cases = [
     {
-      url: 'marina-prats.cloudweb.app',
+      url: 'marina-prats.nuweb.app',
       name: 'Marina Prats',
       type: 'ilustradora · barcelona',
       headline: <>Dibujo libros, <em>portadas</em> y errores tipográficos a propósito.</>,
       sub: 'encargos abiertos',
     },
     {
-      url: 'altagracia.cloudweb.app',
+      url: 'altagracia.nuweb.app',
       name: 'Altagracia',
       type: 'cafetería · buenos aires',
       headline: <><em>Café</em> de tueste oscuro, pan de masa madre, mesa larga.</>,
       sub: 'abre 8 — 19',
     },
     {
-      url: 'jordiruiz.cloudweb.app',
+      url: 'jordiruiz.nuweb.app',
       name: 'Jordi Ruiz',
       type: 'consultor · barcelona',
       headline: <>Ayudo a equipos pequeños a <em>no romperse</em> al crecer.</>,
@@ -1267,7 +1267,7 @@ function Pricing({
           <sup style={{ fontSize: 20, fontStyle: 'italic', marginTop: 14 }}>
             {isArgentina ? '$' : 'US$'}
           </sup>
-          {isArgentina ? '14.999' : '29'}
+          {isArgentina ? '25.000' : '29'}
           <sub
             style={{
               fontFamily: 'var(--font-mono)',
@@ -1293,7 +1293,7 @@ function Pricing({
           }}
         >
           {[
-            'web ilimitada en {nombre}.cloudweb.app',
+            'web ilimitada en {nombre}.nuweb.app',
             'conversaciones ilimitadas con Lúa',
             'dominio propio cuando quieras',
             'analítica sin cookies',

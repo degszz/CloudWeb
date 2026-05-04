@@ -21,7 +21,7 @@ export function getStripe(): Stripe {
     apiVersion: '2025-02-24.acacia',
     typescript: true,
     appInfo: {
-      name: 'CloudWeb',
+      name: 'nuweb',
       version: '0.1.0',
     },
   });

@@ -20,7 +20,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   return (
     <div>
       <h1 className="font-display text-4xl leading-display tracking-display text-ink-strong md:text-5xl">
-        Entrá a CloudWeb
+        Entrá a nuweb
       </h1>
       <p className="mt-4 text-ink-mute">
         Creá tu cuenta o iniciá sesión. No necesitás contraseña.

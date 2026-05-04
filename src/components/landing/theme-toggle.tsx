@@ -6,55 +6,52 @@ export function ThemeToggle() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   useEffect(() => {
-    const stored = localStorage.getItem('cw-theme') as 'dark' | 'light' | null;
-    if (stored) {
-      setTheme(stored);
-      document.documentElement.setAttribute('data-theme', stored);
-    }
+    // Read from DOM (set by inline script) so we stay in sync
+    const current = document.documentElement.getAttribute('data-theme') as 'dark' | 'light' | null;
+    if (current) setTheme(current);
   }, []);
 
   function toggle() {
     const next = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
     document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('cw-theme', next);
+    localStorage.setItem('nw-theme', next);
   }
 
   return (
     <button
       onClick={toggle}
       aria-label={theme === 'dark' ? 'Activar tema claro' : 'Activar tema oscuro'}
-      className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.12em] opacity-60 transition-opacity hover:opacity-100"
-      style={{ cursor: 'pointer' }}
+      style={{
+        cursor: 'pointer',
+        background: 'none',
+        border: 'none',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 6,
+        fontFamily: 'var(--font-mono)',
+        fontSize: 11,
+        letterSpacing: '0.04em',
+        textTransform: 'uppercase' as const,
+        color: 'inherit',
+        opacity: 0.7,
+        transition: 'opacity 0.2s',
+        padding: 0,
+      }}
+      className="nav-link"
     >
-      {theme === 'dark' ? (
-        <>
-          <span
-            style={{
-              display: 'inline-block',
-              width: 12,
-              height: 12,
-              borderRadius: '50%',
-              border: '1px solid currentColor',
-              background: 'currentColor',
-            }}
-          />
-          dark
-        </>
-      ) : (
-        <>
-          <span
-            style={{
-              display: 'inline-block',
-              width: 12,
-              height: 12,
-              borderRadius: '50%',
-              border: '1px solid currentColor',
-            }}
-          />
-          light
-        </>
-      )}
+      <span
+        style={{
+          display: 'inline-block',
+          width: 12,
+          height: 12,
+          borderRadius: '50%',
+          border: '1px solid currentColor',
+          background: theme === 'dark' ? 'currentColor' : 'transparent',
+          transition: 'background 0.2s',
+        }}
+      />
+      {theme === 'dark' ? 'dark' : 'light'}
     </button>
   );
 }

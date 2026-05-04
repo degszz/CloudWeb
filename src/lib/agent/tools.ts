@@ -155,7 +155,7 @@ export const agentTools: Anthropic.Tool[] = [
   {
     name: 'publish_site',
     description:
-      "Publica la versión actual del sitio en {slug}.cloudweb.app. Requiere confirmación explícita del usuario en el turno actual ('publica', 'sí, publícalo'). NO la llames de forma proactiva.",
+      "Publica la versión actual del sitio en {slug}.nuweb.app. Requiere confirmación explícita del usuario en el turno actual ('publica', 'sí, publícalo'). NO la llames de forma proactiva.",
     input_schema: {
       type: 'object',
       properties: {

@@ -57,7 +57,7 @@ export default async function AppLayout({
             href="/dashboard"
             className="font-display text-2xl tracking-display text-ink-strong"
           >
-            CloudWeb
+            nuweb
           </Link>
 
           <div className="flex items-center gap-5 text-sm text-ink-mute">

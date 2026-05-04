@@ -400,7 +400,7 @@ export async function* runAgentTurn(
   } catch (err) {
     console.error('[runner] error inesperado:', err);
     const errorMessage =
-      'Algo no fue bien por mi lado. Si vuelve a pasar, escríbeme a hola@cloudweb.app.';
+      'Algo no fue bien por mi lado. Si vuelve a pasar, escríbeme a hola@nuweb.app.';
     yield { type: 'error', message: errorMessage, code: 'runner_exception' };
 
     await recordTrace({

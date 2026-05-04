@@ -1,9 +1,9 @@
 /**
- * Planes de CloudWeb — pricing dual USD/ARS.
+ * Planes de nuweb — pricing dual USD/ARS.
  *
  * Un solo plan con dos precios según el país del usuario:
  *   - Internacional: $29 USD/mes via Stripe
- *   - Argentina: $14.999 ARS/mes via MercadoPago (cobra directo en pesos)
+ *   - Argentina: $25.000 ARS/mes via MercadoPago (cobra directo en pesos)
  *
  * El precio en ARS es accesible para el mercado local. Ajustable con
  * datos reales de conversión post-MVP.
@@ -12,7 +12,7 @@
  * el código a dashboards externos.
  */
 
-export type PlanId = 'cloudweb-pro';
+export type PlanId = 'nuweb-pro';
 export type PaymentProvider = 'stripe' | 'mercadopago';
 export type Currency = 'usd' | 'ars';
 
@@ -37,9 +37,9 @@ export interface Plan {
 }
 
 export const PLANS: Record<PlanId, Plan> = {
-  'cloudweb-pro': {
-    id: 'cloudweb-pro',
-    name: 'CloudWeb Pro',
+  'nuweb-pro': {
+    id: 'nuweb-pro',
+    name: 'nuweb Pro',
     description:
       'Una web profesional creada en conversación con un agente de IA. Publicación incluida.',
     trialDays: 14,
@@ -54,8 +54,8 @@ export const PLANS: Record<PlanId, Plan> = {
       mercadopago: {
         provider: 'mercadopago',
         currency: 'ars',
-        amount: 14999,
-        display: '$14.999',
+        amount: 25000,
+        display: '$25.000',
         priceId: process.env.NEXT_PUBLIC_MP_PLAN_ID,
       },
     },
@@ -63,7 +63,7 @@ export const PLANS: Record<PlanId, Plan> = {
   },
 } as const;
 
-export const DEFAULT_PLAN: PlanId = 'cloudweb-pro';
+export const DEFAULT_PLAN: PlanId = 'nuweb-pro';
 
 /** Devuelve el pricing correcto según el provider del usuario. */
 export function getPricing(

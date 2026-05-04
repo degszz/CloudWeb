@@ -94,7 +94,7 @@ function SiteCard({ site }: { site: SiteSummary }) {
 
       <div className="mt-10 flex flex-col gap-4 rounded-lg border border-line bg-surface p-8">
         <div className="flex flex-wrap items-center gap-3 text-sm">
-          <span className="font-mono text-ink">{site.slug}.cloudweb.app</span>
+          <span className="font-mono text-ink">{site.slug}.nuweb.app</span>
           {site.is_published ? (
             <span className="rounded-pill bg-accent-green-bg px-3 py-0.5 text-xs uppercase tracking-caps text-accent-green-fg">
               Publicado

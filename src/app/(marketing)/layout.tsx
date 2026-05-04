@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import { CustomCursorLazy as CustomCursor } from '@/components/landing/cursor-lazy';
-import { ThemeToggle } from '@/components/landing/theme-toggle';
+import { ThemeToggleLazy as ThemeToggle } from '@/components/landing/theme-toggle-lazy';
 
 export default function MarketingLayout({
   children,
@@ -29,15 +29,28 @@ export default function MarketingLayout({
         <Link
           href="/"
           style={{
-            fontFamily: 'var(--font-fraunces, var(--font-display))',
-            fontWeight: 900,
-            fontSize: 22,
-            letterSpacing: '-0.05em',
+            display: 'flex',
+            alignItems: 'center',
             color: 'inherit',
             textDecoration: 'none',
           }}
         >
-          cloud<em style={{ fontStyle: 'italic', fontWeight: 300 }}>web</em>
+          {/* Dark theme logo (shown via CSS) */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-dark.avif"
+            alt="nuweb"
+            className="nav-logo nav-logo-dark"
+            style={{ height: 28, width: 'auto' }}
+          />
+          {/* Light theme logo (shown via CSS) */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-light.avif"
+            alt="nuweb"
+            className="nav-logo nav-logo-light"
+            style={{ height: 28, width: 'auto' }}
+          />
         </Link>
 
         <div
@@ -58,6 +71,7 @@ export default function MarketingLayout({
             className="nav-link">cómo</Link>
           <Link href="#precio" style={{ color: 'inherit', textDecoration: 'none', opacity: 0.7 }}
             className="nav-link">precio</Link>
+          <ThemeToggle />
           <Link
             href="/login"
             style={{
@@ -73,17 +87,6 @@ export default function MarketingLayout({
           </Link>
         </div>
       </nav>
-
-      {/* Theme toggle — top right corner, below nav blend */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 20, right: 28,
-          zIndex: 49,
-        }}
-      >
-        <ThemeToggle />
-      </div>
 
       {children}
 
@@ -104,22 +107,30 @@ export default function MarketingLayout({
           gap: 12,
         }}
       >
-        <span style={{ color: 'var(--ink-strong)' }}>CloudWeb © 2026</span>
+        <span style={{ color: 'var(--ink-strong)' }}>nuweb © 2026</span>
         <div style={{ display: 'flex', gap: 20 }}>
           <Link href="/terms" style={{ color: 'inherit', textDecoration: 'none' }}>Términos</Link>
           <Link href="/privacy" style={{ color: 'inherit', textDecoration: 'none' }}>Privacidad</Link>
           <Link href="/cookies" style={{ color: 'inherit', textDecoration: 'none' }}>Cookies</Link>
-          <a href="mailto:hola@cloudweb.app" style={{ color: 'inherit', textDecoration: 'none' }}>
-            hola@cloudweb.app
+          <a href="mailto:hola@nuweb.app" style={{ color: 'inherit', textDecoration: 'none' }}>
+            hola@nuweb.app
           </a>
         </div>
       </footer>
 
       <style>{`
+        /* Logo visibility — nav uses mix-blend-mode: difference so both logos
+           are always "white" visually. We swap which file shows based on theme
+           so the correct artwork appears when blend is removed (e.g. mobile). */
+        .nav-logo-light { display: none; }
+        .nav-logo-dark  { display: block; }
+        [data-theme="light"] .nav-logo-light { display: block; }
+        [data-theme="light"] .nav-logo-dark  { display: none; }
+
         .nav-link:hover { opacity: 1 !important; }
         .nav-cta:hover { background: #fff; color: #000 !important; }
         @media (max-width: 768px) {
-          .nav-link { display: none; }
+          .nav-link { display: none !important; }
         }
       `}</style>
     </div>

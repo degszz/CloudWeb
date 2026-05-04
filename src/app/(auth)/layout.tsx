@@ -12,7 +12,7 @@ export default function AuthLayout({
           href="/"
           className="font-display text-2xl tracking-display text-ink-strong"
         >
-          CloudWeb
+          nuweb
         </Link>
       </header>
       <main className="mx-auto max-w-md px-6 py-16">{children}</main>

@@ -39,9 +39,9 @@ export interface QuotaState {
  */
 export const QUOTA_EXCEEDED_MESSAGE = `Has llegado al límite de turnos del mes. Tu sitio sigue publicado y puedes seguir editándolo manualmente desde el panel.
 
-Si necesitas más turnos para terminar lo que estabas haciendo, escríbeme a hola@cloudweb.app y lo subo al instante.
+Si necesitas más turnos para terminar lo que estabas haciendo, escríbeme a hola@nuweb.app y lo subo al instante.
 
-— El equipo de CloudWeb`;
+— El equipo de nuweb`;
 
 /** Lee el estado actual de cuota del usuario. */
 export async function getQuotaState(userId: string): Promise<QuotaState> {
@@ -109,7 +109,7 @@ export async function notifyFounderOfQuotaExceeded(
     await resend.emails.send({
       from: FROM_EMAIL,
       to: founderEmail,
-      subject: `[CloudWeb] Usuario llegó al límite mensual: ${profile?.email ?? userId}`,
+      subject: `[nuweb] Usuario llegó al límite mensual: ${profile?.email ?? userId}`,
       text: [
         `Un usuario ha llegado al límite de ${state.limit} turnos en ventana móvil de 30 días.`,
         '',

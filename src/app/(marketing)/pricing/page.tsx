@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Icon } from '@/components/ui/icon';
 import { PLANS } from '@/lib/stripe/plans';
 
-const plan = PLANS['cloudweb-pro'];
+const plan = PLANS['nuweb-pro'];
 
 export default function PricingPage() {
   return (
@@ -33,7 +33,7 @@ export default function PricingPage() {
 
         <ul className="mt-7 flex flex-col gap-2.5">
           {[
-            `Un sitio publicado en {nombre}.cloudweb.app`,
+            `Un sitio publicado en {nombre}.nuweb.app`,
             'Edición conversacional con Lúa, la asistente de IA',
             'Tres templates iniciales (portfolio, servicios, hostelería)',
             'SSL incluido, sin configuración',

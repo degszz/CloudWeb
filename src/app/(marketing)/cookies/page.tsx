@@ -12,7 +12,7 @@ export default function CookiesPage() {
       </p>
       <div className="mt-10 max-w-prose text-base leading-body text-ink">
         <p>
-          CloudWeb usa Plausible (analytics cookieless) por lo que no
+          nuweb usa Plausible (analytics cookieless) por lo que no
           requiere banner de consentimiento. Las únicas cookies son las
           de sesión de Supabase, estrictamente necesarias para que el
           login funcione.

@@ -24,10 +24,10 @@ export default function BuilderError({
         <p className="mt-3 text-ink-mute">
           No se pudo cargar el builder. Si vuelve a pasar, escríbenos a{' '}
           <a
-            href="mailto:hola@cloudweb.app"
+            href="mailto:hola@nuweb.app"
             className="underline underline-offset-2 hover:text-ink-strong"
           >
-            hola@cloudweb.app
+            hola@nuweb.app
           </a>
           .
         </p>

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * Hero 3D scene — Three.js icosahedron wireframe flotando.
+ * Hero 3D scene — Three.js cloud wireframe flotando.
  * Interactivo: sigue al mouse con suavidad, se puede arrastrar.
  */
 export function HeroScene() {
@@ -26,7 +26,7 @@ export function HeroScene() {
       // Scene
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100);
-      camera.position.set(0, 0, 5);
+      camera.position.set(0, 0, 6);
 
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(W, H);
@@ -34,27 +34,62 @@ export function HeroScene() {
       renderer.setClearColor(0x000000, 0);
       container!.appendChild(renderer.domElement);
 
-      // Icosahedron — wireframe grueso
-      const geo = new THREE.IcosahedronGeometry(1.5, 1);
-      const mat = new THREE.MeshBasicMaterial({
+      // --- Cloud shape: cluster of spheres forming a cloud silhouette ---
+      const cloudGroup = new THREE.Group();
+
+      // Cloud lobe positions (x, y, z, radius)
+      const lobes: [number, number, number, number][] = [
+        [0, 0, 0, 1.2],       // center
+        [-1.1, 0.3, 0, 0.9],  // left
+        [1.1, 0.2, 0, 1.0],   // right
+        [-0.5, 0.7, 0, 0.8],  // top-left
+        [0.5, 0.8, 0, 0.75],  // top-right
+        [0, 0.95, 0, 0.6],    // top-center
+        [-1.6, -0.1, 0, 0.6], // far left
+        [1.6, -0.1, 0, 0.65], // far right
+        [0, -0.3, 0.4, 0.7],  // front
+        [0, -0.2, -0.4, 0.7], // back
+      ];
+
+      // Wireframe lobes
+      lobes.forEach(([x, y, z, r]) => {
+        const geo = new THREE.SphereGeometry(r, 12, 10);
+        const mat = new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          wireframe: true,
+          transparent: true,
+          opacity: 0.12,
+        });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set(x, y, z);
+        cloudGroup.add(mesh);
+      });
+
+      // Soft inner core (larger, very low opacity)
+      const coreGeo = new THREE.SphereGeometry(1.4, 16, 14);
+      const coreMat = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         wireframe: true,
         transparent: true,
-        opacity: 0.18,
+        opacity: 0.04,
       });
-      const mesh = new THREE.Mesh(geo, mat);
-      scene.add(mesh);
+      const core = new THREE.Mesh(coreGeo, coreMat);
+      core.position.set(0, 0.2, 0);
+      cloudGroup.add(core);
 
-      // Inner sphere
-      const innerGeo = new THREE.SphereGeometry(0.9, 16, 16);
-      const innerMat = new THREE.MeshBasicMaterial({
+      // Flat bottom — subtle line to ground the cloud
+      const bottomGeo = new THREE.PlaneGeometry(3.4, 0.01, 20, 1);
+      const bottomMat = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         wireframe: true,
         transparent: true,
         opacity: 0.06,
       });
-      const inner = new THREE.Mesh(innerGeo, innerMat);
-      scene.add(inner);
+      const bottom = new THREE.Mesh(bottomGeo, bottomMat);
+      bottom.position.set(0, -0.5, 0);
+      cloudGroup.add(bottom);
+
+      scene.add(cloudGroup);
 
       // Particles
       const pCount = 120;
@@ -123,17 +158,15 @@ export function HeroScene() {
         currentY += (targetY - currentY) * 0.04;
 
         if (isDragging) {
-          mesh.rotation.y += velocityX;
-          mesh.rotation.x += velocityY;
-          inner.rotation.y += velocityX * 0.6;
-          inner.rotation.x += velocityY * 0.6;
+          cloudGroup.rotation.y += velocityX;
+          cloudGroup.rotation.x += velocityY;
           velocityX *= 0.92;
           velocityY *= 0.92;
         } else {
-          mesh.rotation.y = t * 0.22 + currentX * 0.8;
-          mesh.rotation.x = currentY * 0.8;
-          inner.rotation.y = -t * 0.14;
-          inner.rotation.x = t * 0.09;
+          cloudGroup.rotation.y = t * 0.15 + currentX * 0.6;
+          cloudGroup.rotation.x = currentY * 0.4;
+          // Gentle bob
+          cloudGroup.position.y = Math.sin(t * 0.8) * 0.08;
         }
 
         renderer.render(scene, camera);

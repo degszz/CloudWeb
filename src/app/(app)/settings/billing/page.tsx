@@ -93,7 +93,7 @@ export default async function BillingPage({
 
         <ul className="mt-7 flex flex-col gap-2.5">
           {[
-            'Un sitio publicado en tu-nombre.cloudweb.app',
+            'Un sitio publicado en tu-nombre.nuweb.app',
             'Edición conversacional con Lúa',
             '12 componentes profesionales, 2 variantes cada uno',
             'SSL incluido, sin configuración',
