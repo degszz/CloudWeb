@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(node -e \"const p = require\\('@phosphor-icons/react'\\); console.log\\('CaretDown:', !!p.CaretDown\\); console.log\\('ChevronDown:', !!p.ChevronDown\\); console.log\\('Wifi:', !!p.Wifi\\); console.log\\('WifiHigh:', !!p.WifiHigh\\);\")",
+      "Bash(where gh *)",
+      "Bash(where.exe gh *)",
+      "mcp__85c0c824-be89-47a5-88d3-2a91b4b55a7c__get_project_url",
+      "mcp__85c0c824-be89-47a5-88d3-2a91b4b55a7c__get_publishable_keys",
+      "mcp__fde95d05-b29a-404e-8dac-3bcee38cfaa1__list_teams",
+      "mcp__fde95d05-b29a-404e-8dac-3bcee38cfaa1__deploy_to_vercel",
+      "Bash(where vercel *)",
+      "Bash(vercel --version)",
+      "Bash(npm install *)",
+      "Bash(npx vercel *)",
+      "Bash(npm run *)",
+      "PowerShell(git add package.json package-lock.json src/app/globals.css src/app/layout.tsx tailwind.config.ts)",
+      "PowerShell(git add 'src/app/\\(marketing\\)/layout.tsx' 'src/app/\\(marketing\\)/page.tsx')",
+      "PowerShell(git add src/components/landing/)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "mcp__cb98a2eb-47d0-408e-bb88-f16b9f10d98a__get_stripe_account_info",
+      "mcp__cb98a2eb-47d0-408e-bb88-f16b9f10d98a__list_products",
+      "mcp__cb98a2eb-47d0-408e-bb88-f16b9f10d98a__list_prices",
+      "mcp__cb98a2eb-47d0-408e-bb88-f16b9f10d98a__create_product",
+      "mcp__cb98a2eb-47d0-408e-bb88-f16b9f10d98a__create_price"
+    ]
+  }
+}

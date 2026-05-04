@@ -38,9 +38,16 @@ export function LuaChat() {
   const [typing, setTyping] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const hasMounted = useRef(false);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Skip first render to prevent page-level scroll on load
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
+    // Scroll only the chat container, not the whole page
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, [messages, typing]);
 
   function send() {

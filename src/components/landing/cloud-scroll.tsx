@@ -1,50 +1,181 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
- * Sección de scroll inmersivo — una nube de partículas CSS que se transforma
- * a medida que el usuario hace scroll, creando una experiencia de inmersión.
- *
- * Usa Intersection Observer + scroll position para interpolar valores.
+ * Scroll-zoom 3D divider — fly through 30 nested wireframe rectangle planes.
+ * Camera Z is driven by scroll progress over the section (200vh tall, sticky canvas).
+ * Theme-aware: dark lines on light bg, light lines on dark bg.
  */
 export function CloudScroll() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
+  const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
-    if (!section) return;
+    const mount = mountRef.current;
+    if (!section || !mount) return;
 
-    function onScroll() {
-      const rect = section!.getBoundingClientRect();
-      const vh = window.innerHeight;
-      // progress: 0 when section enters bottom, 1 when it exits top
-      const raw = 1 - (rect.top + rect.height) / (vh + rect.height);
-      setProgress(Math.max(0, Math.min(1, raw)));
+    let THREE: typeof import('three');
+    let renderer: import('three').WebGLRenderer;
+    let raf: number;
+    let disposed = false;
+
+    async function init() {
+      THREE = await import('three');
+      if (disposed) return;
+
+      const W = () => mount!.clientWidth;
+      const H = () => mount!.clientHeight;
+
+      const scene = new THREE.Scene();
+      // No background — transparent, inherits page bg
+      const camera = new THREE.PerspectiveCamera(60, W() / H(), 0.1, 1000);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
+      renderer.setSize(W(), H());
+      renderer.setClearColor(0x000000, 0);
+      mount!.appendChild(renderer.domElement);
+
+      // --- Detect theme for line color ---
+      function getLineColor() {
+        return document.documentElement.getAttribute('data-theme') === 'light'
+          ? 0x000000
+          : 0xffffff;
+      }
+
+      // --- 30 nested wireframe rectangles along Z ---
+      const COUNT = 30;
+      type LayerGroup = import('three').Group & { __materials: import('three').LineBasicMaterial[] };
+      const layers: LayerGroup[] = [];
+
+      for (let i = 0; i < COUNT; i++) {
+        const grp = new THREE.Group() as LayerGroup;
+        grp.__materials = [];
+
+        const w = 4 + i * 0.6;
+        const h = 2.4 + i * 0.36;
+
+        // Outer wireframe rectangle
+        const eg = new THREE.EdgesGeometry(new THREE.PlaneGeometry(w, h));
+        const lm = new THREE.LineBasicMaterial({
+          color: getLineColor(),
+          transparent: true,
+          opacity: 0.7,
+        });
+        grp.add(new THREE.LineSegments(eg, lm));
+        grp.__materials.push(lm);
+
+        // Inner layout blocks (simulated "webpage" wireframe)
+        const innerEg1 = new THREE.EdgesGeometry(
+          new THREE.PlaneGeometry(w * 0.6, h * 0.55)
+        );
+        const m1mat = new THREE.LineBasicMaterial({
+          color: getLineColor(),
+          transparent: true,
+          opacity: 0.6,
+        });
+        const m1 = new THREE.LineSegments(innerEg1, m1mat);
+        m1.position.set(-w * 0.18, h * 0.18, 0.001);
+        grp.add(m1);
+        grp.__materials.push(m1mat);
+
+        const innerEg2 = new THREE.EdgesGeometry(
+          new THREE.PlaneGeometry(w * 0.3, h * 0.4)
+        );
+        const m2mat = new THREE.LineBasicMaterial({
+          color: getLineColor(),
+          transparent: true,
+          opacity: 0.6,
+        });
+        const m2 = new THREE.LineSegments(innerEg2, m2mat);
+        m2.position.set(w * 0.28, -h * 0.2, 0.001);
+        grp.add(m2);
+        grp.__materials.push(m2mat);
+
+        grp.position.z = -i * 4;
+        scene.add(grp);
+        layers.push(grp);
+      }
+
+      // --- Theme observer: update line colors ---
+      function updateColors() {
+        const color = new THREE.Color(getLineColor());
+        for (const grp of layers) {
+          for (const m of grp.__materials) {
+            m.color.copy(color);
+          }
+        }
+      }
+
+      const themeObs = new MutationObserver(updateColors);
+      themeObs.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme'],
+      });
+
+      // --- Resize ---
+      function onResize() {
+        camera.aspect = W() / H();
+        camera.updateProjectionMatrix();
+        renderer.setSize(W(), H());
+      }
+      window.addEventListener('resize', onResize);
+
+      // --- Scroll progress ---
+      function getProgress() {
+        const r = section!.getBoundingClientRect();
+        const total = section!.offsetHeight - window.innerHeight;
+        if (total <= 0) return 0;
+        const scrolled = -r.top;
+        return Math.max(0, Math.min(1, scrolled / total));
+      }
+
+      // --- Animation ---
+      function animate() {
+        if (disposed) return;
+        raf = requestAnimationFrame(animate);
+
+        const p = getProgress();
+
+        // Camera flies from z=6 → z=-110
+        camera.position.z = 6 - p * 116;
+        camera.position.x = Math.sin(p * Math.PI * 2) * 0.4;
+        camera.position.y = Math.cos(p * Math.PI * 2) * 0.2;
+        camera.lookAt(0, 0, -50);
+
+        // Fade layers behind camera
+        for (const grp of layers) {
+          const dz = grp.position.z - camera.position.z;
+          const op = dz < -2 ? 0 : Math.min(1, (dz + 2) / 8);
+          for (const m of (grp as LayerGroup).__materials) {
+            m.opacity = op * 0.75;
+          }
+        }
+
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      return () => {
+        themeObs.disconnect();
+        window.removeEventListener('resize', onResize);
+      };
     }
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
+    const cleanup = init();
+
+    return () => {
+      disposed = true;
+      cancelAnimationFrame(raf);
+      cleanup.then(fn => fn?.());
+      renderer?.dispose();
+      if (mount && renderer?.domElement.parentNode === mount) {
+        mount.removeChild(renderer.domElement);
+      }
+    };
   }, []);
-
-  // Interpolated values
-  const scale = 0.3 + progress * 2.5;
-  const opacity = progress < 0.15 ? progress / 0.15 : progress > 0.85 ? (1 - progress) / 0.15 : 1;
-  const blur = progress < 0.3 ? (1 - progress / 0.3) * 8 : progress > 0.7 ? ((progress - 0.7) / 0.3) * 12 : 0;
-  const yShift = (1 - progress) * 60 - 30;
-  const rotateZ = progress * 15 - 7.5;
-
-  // Generate cloud dots deterministically
-  const dots = useRef(
-    Array.from({ length: 60 }, (_, i) => ({
-      x: 50 + (Math.sin(i * 2.39996) * 30 + Math.cos(i * 1.7) * 15) * (0.5 + (i % 3) * 0.25),
-      y: 50 + (Math.cos(i * 2.39996) * 18 + Math.sin(i * 3.1) * 10) * (0.5 + (i % 4) * 0.2),
-      size: 3 + (i % 5) * 2 + Math.sin(i) * 2,
-      delay: (i % 8) * 0.15,
-    }))
-  ).current;
 
   return (
     <section
@@ -55,150 +186,135 @@ export function CloudScroll() {
         overflow: 'hidden',
       }}
     >
-      {/* Sticky container */}
+      {/* Sticky canvas container */}
       <div
+        ref={mountRef}
         style={{
           position: 'sticky',
           top: 0,
           height: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          width: '100%',
           overflow: 'hidden',
         }}
+      />
+
+      {/* Text overlays that fade in/out at scroll milestones */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '200vh',
+          pointerEvents: 'none',
+          zIndex: 2,
+        }}
       >
-        {/* Cloud particle formation */}
-        <div
-          style={{
-            position: 'relative',
-            width: '60vw',
-            height: '40vh',
-            transform: `scale(${scale}) translateY(${yShift}px) rotate(${rotateZ}deg)`,
-            opacity: opacity,
-            filter: `blur(${blur}px)`,
-            transition: 'transform 0.1s ease-out, opacity 0.1s, filter 0.1s',
-          }}
-        >
-          {dots.map((dot, i) => (
-            <span
-              key={i}
-              style={{
-                position: 'absolute',
-                left: `${dot.x}%`,
-                top: `${dot.y}%`,
-                width: dot.size,
-                height: dot.size,
-                borderRadius: '50%',
-                background: 'var(--ink-strong)',
-                opacity: 0.15 + (progress * 0.4),
-                transform: `scale(${1 + Math.sin(progress * Math.PI + dot.delay * 3) * 0.5})`,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Text overlay — fades in at different scroll points */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            pointerEvents: 'none',
-            zIndex: 2,
-          }}
-        >
-          {/* Phase 1: "Imagina" */}
-          <span
-            style={{
-              fontFamily: 'var(--font-fraunces, var(--font-display))',
-              fontWeight: 300,
-              fontSize: 'clamp(2rem, 6vw, 5rem)',
-              fontStyle: 'italic',
-              letterSpacing: '-0.04em',
-              color: 'var(--ink-strong)',
-              opacity: progress > 0.1 && progress < 0.35 ? (progress < 0.2 ? (progress - 0.1) / 0.1 : (0.35 - progress) / 0.15) : 0,
-              transform: `translateY(${progress < 0.2 ? 20 : 0}px)`,
-              transition: 'transform 0.3s ease-out',
-            }}
-          >
-            Imaginá.
-          </span>
-
-          {/* Phase 2: "Habla" */}
-          <span
-            style={{
-              fontFamily: 'var(--font-fraunces, var(--font-display))',
-              fontWeight: 300,
-              fontSize: 'clamp(2.5rem, 8vw, 7rem)',
-              letterSpacing: '-0.05em',
-              color: 'var(--ink-strong)',
-              opacity: progress > 0.35 && progress < 0.6 ? (progress < 0.42 ? (progress - 0.35) / 0.07 : (0.6 - progress) / 0.18) : 0,
-              transform: `translateY(${progress < 0.42 ? 30 : 0}px)`,
-              transition: 'transform 0.3s ease-out',
-            }}
-          >
-            Hablá.
-          </span>
-
-          {/* Phase 3: "Publica" */}
-          <span
-            style={{
-              fontFamily: 'var(--font-fraunces, var(--font-display))',
-              fontWeight: 400,
-              fontStyle: 'italic',
-              fontSize: 'clamp(3rem, 10vw, 9rem)',
-              letterSpacing: '-0.06em',
-              color: 'var(--ink-strong)',
-              opacity: progress > 0.6 && progress < 0.95 ? (progress < 0.68 ? (progress - 0.6) / 0.08 : (0.95 - progress) / 0.27) : 0,
-              transform: `scale(${progress > 0.68 ? 1 : 0.9})`,
-              transition: 'transform 0.3s ease-out',
-            }}
-          >
-            Publicá.
-          </span>
-        </div>
-
-        {/* Scroll indicator */}
-        {progress < 0.15 && (
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 40,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: 10,
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              color: 'var(--ink-3)',
-              opacity: 1 - progress * 6,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 8,
-            }}
-          >
-            <span style={{
-              width: 1, height: 30,
-              background: 'var(--ink-3)',
-              position: 'relative',
-              overflow: 'hidden',
-              display: 'block',
-            }}>
-              <span style={{
-                position: 'absolute', top: '-100%', left: 0,
-                width: '100%', height: '100%',
-                background: 'var(--ink)',
-                animation: 'cw-slide 2s infinite',
-              }} />
-            </span>
-            scroll
-          </div>
-        )}
+        <ScrollText
+          text="Imaginá."
+          startVh={10}
+          endVh={35}
+          italic
+          size="clamp(2rem, 6vw, 5rem)"
+        />
+        <ScrollText
+          text="Hablá."
+          startVh={40}
+          endVh={65}
+          size="clamp(2.5rem, 8vw, 7rem)"
+        />
+        <ScrollText
+          text="Publicá."
+          startVh={70}
+          endVh={95}
+          italic
+          size="clamp(3rem, 10vw, 9rem)"
+          bold
+        />
       </div>
     </section>
+  );
+}
+
+/**
+ * Scroll-triggered text overlay that appears at a certain scroll position
+ * within the 200vh section.
+ */
+function ScrollText({
+  text,
+  startVh,
+  endVh,
+  italic,
+  size,
+  bold,
+}: {
+  text: string;
+  startVh: number;
+  endVh: number;
+  italic?: boolean;
+  size: string;
+  bold?: boolean;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const section = el.closest('section');
+    if (!section) return;
+
+    function onScroll() {
+      const rect = section!.getBoundingClientRect();
+      const total = section!.offsetHeight - window.innerHeight;
+      if (total <= 0) return;
+      const progress = Math.max(0, Math.min(1, -rect.top / total)) * 100;
+
+      const mid = (startVh + endVh) / 2;
+      const fadeIn = startVh;
+      const fadeOut = endVh;
+
+      let opacity = 0;
+      if (progress >= fadeIn && progress <= fadeOut) {
+        if (progress < mid) {
+          opacity = (progress - fadeIn) / (mid - fadeIn);
+        } else {
+          opacity = 1 - (progress - mid) / (fadeOut - mid);
+        }
+      }
+
+      const yShift = progress < mid ? (1 - opacity) * 20 : 0;
+
+      el!.style.opacity = String(Math.max(0, Math.min(1, opacity)));
+      el!.style.transform = `translate(-50%, -50%) translateY(${yShift}px)`;
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [startVh, endVh]);
+
+  return (
+    <span
+      ref={ref}
+      style={{
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        fontFamily: 'var(--font-fraunces, var(--font-display))',
+        fontWeight: bold ? 400 : 300,
+        fontStyle: italic ? 'italic' : 'normal',
+        fontSize: size,
+        letterSpacing: '-0.05em',
+        color: 'var(--ink-strong)',
+        opacity: 0,
+        transition: 'transform 0.3s ease-out',
+        whiteSpace: 'nowrap',
+        zIndex: 10,
+      }}
+    >
+      {text}
+    </span>
   );
 }
